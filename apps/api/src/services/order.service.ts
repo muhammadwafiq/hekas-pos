@@ -379,11 +379,15 @@ export const orderService = {
    * Restores stock + updates order status + audit log.
    * Requires manager PIN verified (enforced by route — see pinService).
    */
+  /**
+   * Void an order — restores stock + marks order as voided in atomic tx.
+   * @throws ValidationError if reason < 5 chars
+   */
   async voidOrder(opts: {
     orderId: string;
     voidedBy: string;
     voidReason: string;
-  }) {
+  }): Promise<typeof orders.$inferSelect> {
     if (!opts.voidReason || opts.voidReason.length < 5) {
       throw new ValidationError('Void reason is required (min 5 chars)');
     }
@@ -467,11 +471,18 @@ export const orderService = {
     });
   },
 
-  async getOrder(id: string) {
+  async getOrder(id: string): Promise<(typeof orders.$inferSelect & { items: (typeof orderItems.$inferSelect)[] }) | null> {
     return orderRepo.findById(id);
   },
 
-  async listOrders(opts: { outletId?: string; cashierId?: string; shiftId?: string; status?: string; limit?: number; offset?: number }) {
+  async listOrders(opts: {
+    outletId?: string;
+    cashierId?: string;
+    shiftId?: string;
+    status?: 'pending' | 'paid' | 'voided' | 'refunded' | 'partial_refunded';
+    limit?: number;
+    offset?: number;
+  }): Promise<(typeof orders.$inferSelect)[]> {
     return orderRepo.list(opts);
   },
 };

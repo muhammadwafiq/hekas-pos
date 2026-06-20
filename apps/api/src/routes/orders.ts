@@ -130,7 +130,7 @@ export const orderRoutes = new Elysia({ prefix: '/api/orders', tags: ['Orders'] 
         outletId: user.outletId!,
         cashierId: query.cashierId as string | undefined,
         shiftId: query.shiftId as string | undefined,
-        status: query.status as string | undefined,
+        status: query.status as 'pending' | 'paid' | 'voided' | 'refunded' | 'partial_refunded' | undefined,
         limit: Number(query.limit ?? 50),
         offset: Number(query.offset ?? 0),
       }),
