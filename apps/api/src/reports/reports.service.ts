@@ -4,7 +4,7 @@
  */
 
 import { db } from '../config/database.js';
-import { eq, and, gte, desc, inArray, sql } from 'drizzle-orm';
+import { eq, and, gte, lte, desc, inArray, sql } from 'drizzle-orm';
 import { orders, payments } from '../db/schema/pos.js';
 import { products, categories } from '../db/schema/master.js';
 import { stocks } from '../db/schema/stock.js';
@@ -60,10 +60,16 @@ interface TransactionRow {
 async function getSalesTransactions(opts: {
   outletId: string;
   range: ReportRange;
+  from?: string;
+  to?: string;
   limit?: number;
 }): Promise<TransactionRow[]> {
-  const { outletId, range, limit = 1000 } = opts;
-  const sinceIso = rangeStart(range).toISOString();
+  const { outletId, range, from, to, limit = 1000 } = opts;
+  const sinceIso = (from ?? rangeStart(range).toISOString());
+  // 'to' is inclusive end-of-day if no time component given
+  const toIso = to
+    ? (to.length === 10 ? `${to}T23:59:59.999Z` : to)
+    : null;
 
   const rows = await db
     .select({
@@ -82,6 +88,7 @@ async function getSalesTransactions(opts: {
       and(
         eq(orders.outletId, outletId),
         gte(orders.createdAt, sql`${sinceIso}::timestamp`),
+        ...(toIso ? [lte(orders.createdAt, sql`${toIso}::timestamp`)] : []),
       ),
     )
     .orderBy(desc(orders.createdAt))
@@ -116,10 +123,14 @@ export const reportsService = {
     outletId: string;
     range: ReportRange;
     format: ReportFormat;
+    from?: string;
+    to?: string;
   }): Promise<ReportResult> {
-    const { outletId, range, format } = opts;
+    const { outletId, range, format, from, to } = opts;
+    // TODO: when from/to provided, override KPI summary range too
+    // For now, summary uses `range`; transactions use from/to if provided
     const data = await dashboardManager(outletId, range);
-    const txs = await getSalesTransactions({ outletId, range });
+    const txs = await getSalesTransactions({ outletId, range, from, to });
     const ts = timestampForFilename();
     const filenameBase = `laporan-penjualan-${range}-${ts}`;
 
@@ -385,9 +396,11 @@ export const reportsService = {
     outletId: string;
     range: ReportRange;
     format: ReportFormat;
+    from?: string;
+    to?: string;
   }): Promise<ReportResult> {
-    const { outletId, range, format } = opts;
-    const txs = await getSalesTransactions({ outletId, range });
+    const { outletId, range, format, from, to } = opts;
+    const txs = await getSalesTransactions({ outletId, range, from, to });
     const ts = timestampForFilename();
     const filenameBase = `laporan-transaksi-${range}-${ts}`;
     const totalRevenue = txs.reduce(

@@ -3,7 +3,7 @@
  * Uses the same Postgres database — pg-boss manages its own `pgboss` schema.
  */
 
-import PgBoss from 'pg-boss';
+import { PgBoss } from 'pg-boss';
 import { env } from './env.js';
 import { logger } from './logger.js';
 
@@ -48,7 +48,7 @@ export async function stopQueue(): Promise<void> {
 export const QUEUE_NAMES = {
   TELEGRAM_SEND: 'telegram:send',
   PDF_GENERATE: 'pdf:generate',
-  DAILY_REPORT: 'reports:daily',
+  DAILY_REPORT: 'reports-daily',
   AI_CLEANUP: 'ai:cleanup',
   NOTIFICATION_RETRY: 'notification:retry',
 } as const;

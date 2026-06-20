@@ -30,7 +30,10 @@ import { telegramRoutes } from './routes/telegram.js';
 import { telegramWebhookRoutes } from './routes/webhook/telegram.js';
 import { suratJalanRoutes } from './routes/surat-jalan.js';
 import { reportRoutes } from './reports/reports.routes.js';
+import { hrRoutes } from './hr/hr.routes.js';
 import { telegramSenderWorker } from './workers/telegram-sender.worker.js';
+import { startQueue, getQueue } from './config/queue.js';
+import { dailyReportWorker } from './workers/daily-report.worker.js';
 
 const app = new Elysia()
   // ====== GLOBAL MIDDLEWARE ======
@@ -67,6 +70,7 @@ const app = new Elysia()
           { name: 'Incoming Goods', description: 'Purchase Orders (PO) + verify/reject' },
           { name: 'Outgoing Goods', description: 'Picking + delivery workflow' },
           { name: 'Reports', description: 'Export reports (Excel/PDF)' },
+          { name: 'HR', description: 'Employees, attendance, leave requests' },
         ],
         servers: [
           { url: env.APP_BASE_URL, description: `${env.NODE_ENV}` },
@@ -106,6 +110,7 @@ const app = new Elysia()
   .use(telegramWebhookRoutes)
   .use(suratJalanRoutes)
   .use(reportRoutes)
+  .use(hrRoutes)
 
   // ====== GLOBAL ERROR HANDLER (catches everything) ======
   .onError(({ code, error, set, request }) => {
@@ -196,6 +201,18 @@ pingDb()
 if (env.ENABLE_TELEGRAM) {
   telegramSenderWorker.start();
 }
+
+// Start pg-boss queue + daily report worker
+(async () => {
+  try {
+    const boss = await startQueue();
+    await dailyReportWorker.start(boss);
+    await dailyReportWorker.schedule(boss);
+    logger.info('pg-boss workers + schedules ready');
+  } catch (err) {
+    logger.error({ err }, 'pg-boss startup FAILED');
+  }
+})();
 
 export type App = typeof app;
 export default app;

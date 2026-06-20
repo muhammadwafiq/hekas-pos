@@ -23,6 +23,28 @@ const formatSchema = t.Optional(
   t.Union([t.Literal('excel'), t.Literal('pdf')]),
 );
 
+const dateSchema = t.Optional(
+  t.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{3})?)?Z)?$' }),
+);
+
+const salesQuerySchema = t.Object({
+  range: rangeSchema,
+  format: formatSchema,
+  from: dateSchema,
+  to: dateSchema,
+});
+
+const inventoryQuerySchema = t.Object({
+  format: formatSchema,
+});
+
+const transactionsQuerySchema = t.Object({
+  range: rangeSchema,
+  format: formatSchema,
+  from: dateSchema,
+  to: dateSchema,
+});
+
 function ensureOutlet(outletId: string | null | undefined): string {
   if (!outletId) {
     throw new BusinessRuleError('User has no outlet assigned');
@@ -56,12 +78,14 @@ export const reportRoutes = new Elysia({ prefix: '/api/reports', tags: ['Reports
         outletId,
         range: (query.range as ReportRange) ?? 'today',
         format: (query.format as ReportFormat) ?? 'excel',
+        from: query.from,
+        to: query.to,
       });
       setBinaryResponse(set, result.contentType, result.filename);
       return result.buffer;
     },
     {
-      query: t.Object({ range: rangeSchema, format: formatSchema }),
+      query: salesQuerySchema,
     },
   )
   .get(
@@ -80,7 +104,7 @@ export const reportRoutes = new Elysia({ prefix: '/api/reports', tags: ['Reports
       return result.buffer;
     },
     {
-      query: t.Object({ format: formatSchema }),
+      query: inventoryQuerySchema,
     },
   )
   .get(
@@ -95,11 +119,13 @@ export const reportRoutes = new Elysia({ prefix: '/api/reports', tags: ['Reports
         outletId,
         range: (query.range as ReportRange) ?? 'today',
         format: (query.format as ReportFormat) ?? 'excel',
+        from: query.from,
+        to: query.to,
       });
       setBinaryResponse(set, result.contentType, result.filename);
       return result.buffer;
     },
     {
-      query: t.Object({ range: rangeSchema, format: formatSchema }),
+      query: transactionsQuerySchema,
     },
   );
