@@ -1,0 +1,45 @@
+# Bun
+node_modules/
+bun.lockb
+
+# Build output
+dist/
+build/
+.svelte-kit/
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Drizzle
+apps/api/drizzle/meta/
+
+# Test
+coverage/
+
+# Docker volumes
+.docker/postgres-data/
+.docker/pgadmin-data/
+
+# Local artifacts
+tmp/
+temp/
+.cache/
+
+# Uploaded files (dev)
+apps/api/static/uploads/

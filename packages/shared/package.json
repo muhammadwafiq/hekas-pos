@@ -1,0 +1,32 @@
+{
+  "name": "@hekas/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HEKAS POS — Shared Zod schemas + TypeScript types (FE & BE contract)",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./schemas/*": {
+      "types": "./src/schemas/*.ts",
+      "import": "./src/schemas/*.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "echo 'lint placeholder'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

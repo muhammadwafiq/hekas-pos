@@ -1,0 +1,37 @@
+{
+  "name": "hekas-pos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HEKAS POS — monorepo (API + Frontend + Shared packages)",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "bun run --cwd apps/api dev",
+    "build:api": "bun run --cwd apps/api build",
+    "start:api": "bun run --cwd apps/api start",
+    "test:api": "bun run --cwd apps/api test",
+    "db:generate": "bun run --cwd apps/api db:generate",
+    "db:migrate": "bun run --cwd apps/api db:migrate",
+    "db:seed": "bun run --cwd apps/api db:seed",
+    "db:studio": "bun run --cwd apps/api db:studio",
+    "db:reset": "bun run --cwd apps/api db:reset",
+    "db:drop": "bun run --cwd apps/api db:drop",
+    "lint": "bun run --filter '*' lint",
+    "typecheck": "bun run --filter '*' typecheck",
+    "build:shared": "bun run --cwd packages/shared build",
+    "docker:up": "docker compose -f .docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f .docker/docker-compose.yml down",
+    "docker:logs": "docker compose -f .docker/docker-compose.yml logs -f",
+    "setup": "bun install && bun run build:shared"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}
