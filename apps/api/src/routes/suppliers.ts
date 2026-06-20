@@ -8,7 +8,7 @@ import { authorize as requireRole } from '../lib/authorize.js';
 import { supplierRepo } from '../repositories/supplier.repo.js';
 
 export const supplierRoutes = new Elysia({ prefix: '/api/suppliers', tags: ['Suppliers'] })
-  .get('/', async ({ jwt, query, headers, set }) => {
+  .get('/', async ({ jwt, query, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return supplierRepo.list({
       q: query.q,
@@ -25,12 +25,12 @@ export const supplierRoutes = new Elysia({ prefix: '/api/suppliers', tags: ['Sup
     }),
   })
 
-  .get('/:id', async ({ jwt, params, headers, set }) => {
+  .get('/:id', async ({ jwt, params, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return supplierRepo.getById(params.id);
   })
 
-  .post('/', async ({ jwt, body, headers, set }) => {
+  .post('/', async ({ jwt, body, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return supplierRepo.create(body as any);
   }, {
@@ -45,12 +45,12 @@ export const supplierRoutes = new Elysia({ prefix: '/api/suppliers', tags: ['Sup
     }),
   })
 
-  .patch('/:id', async ({ jwt, params, body, headers, set }) =>  {
+  .patch('/:id', async ({ jwt, params, body, headers, set }: any) =>  {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return supplierRepo.update(params.id, body as any);
   })
 
-  .delete('/:id', async ({ jwt, params, headers, set }) => {
+  .delete('/:id', async ({ jwt, params, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return supplierRepo.softDelete(params.id);
   });

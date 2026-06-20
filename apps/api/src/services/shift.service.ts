@@ -46,11 +46,11 @@ export const shiftService = {
     const diff = opts.endingCash - expectedCash;
 
     return shiftRepo.endShift(opts.shiftId, {
-      endingCash: opts.endingCash.toString(),
-      expectedCash: expectedCash.toString(),
-      cashDifference: diff.toString(),
+      endingCash: opts.endingCash,
+      expectedCash,
+      cashDifference: diff,
       totalTransactions: shift.totalTransactions ?? 0,
-      totalSales: shift.totalSales ?? '0',
+      totalSales: Number(shift.totalSales ?? '0'),
       status: 'selesai',
       notes: opts.notes,
     });

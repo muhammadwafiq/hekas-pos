@@ -20,7 +20,7 @@ export const outgoingRepo = {
     const limit = Math.min(opts.limit ?? 50, 200);
     const offset = opts.offset ?? 0;
     const conditions: any[] = [eq(outgoingGoods.outletId, opts.outletId)];
-    if (opts.status) conditions.push(eq(outgoingGoods.status, opts.status));
+    if (opts.status) conditions.push(eq(outgoingGoods.status, opts.status as any));
     const where = and(...conditions);
 
     const [items, [{ total }]] = await Promise.all([

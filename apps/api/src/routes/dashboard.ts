@@ -10,7 +10,7 @@ import { dashboardManager } from '../services/dashboard-manager.service.js';
 import { NotFoundError } from '../lib/errors.js';
 
 export const dashboardRoutes = new Elysia({ prefix: '/api/dashboard', tags: ['Dashboard'] })
-  .get('/gudang', async ({ jwt, headers, query, set }) => {
+  .get('/gudang', async ({ jwt, headers, query, set }: any) => {
     const user = await getAuthUser(jwt, headers);
     await requireRole(user, ['admin_gudang', 'manager']);
     const outletId = (query.outletId as string) ?? user.outletId;
@@ -18,7 +18,7 @@ export const dashboardRoutes = new Elysia({ prefix: '/api/dashboard', tags: ['Da
     return dashboardGudangService.summary({ outletId });
   })
 
-  .get('/manager', async ({ jwt, headers, query, set }) => {
+  .get('/manager', async ({ jwt, headers, query, set }: any) => {
     const user = await getAuthUser(jwt, headers);
     await requireRole(user, ['manager']);
     if (!user.outletId) throw new NotFoundError('User has no outlet');

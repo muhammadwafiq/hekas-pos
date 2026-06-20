@@ -10,7 +10,7 @@ import { NotFoundError } from '../lib/errors.js';
 
 export const incomingRoutes = new Elysia({ prefix: '/api/incoming-goods', tags: ['Incoming Goods'] })
 
-  .get('/', async ({ jwt, query, headers, set }) => {
+  .get('/', async ({ jwt, query, headers, set }: any) => {
     const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     const outletId = (query.outletId as string) ?? user.outletId;
     if (!outletId) throw new NotFoundError('outletId required');
@@ -20,14 +20,14 @@ export const incomingRoutes = new Elysia({ prefix: '/api/incoming-goods', tags: 
     return incomingService.list({ outletId, status, limit, offset });
   })
 
-  .get('/:id', async ({ jwt, params, headers, set }) => {
+  .get('/:id', async ({ jwt, params, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return incomingService.getDetail(params.id);
   })
 
   .post(
     '/',
-    async ({ jwt, body, headers, set }) => {
+    async ({ jwt, body, headers, set }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const { outletId, supplierId, notes, items } = body as any;
       if (!outletId || !supplierId || !Array.isArray(items) || items.length === 0) {
@@ -59,7 +59,7 @@ export const incomingRoutes = new Elysia({ prefix: '/api/incoming-goods', tags: 
 
   .post(
     '/:id/verify',
-    async ({ jwt, params, body, headers, set }) => {
+    async ({ jwt, params, body, headers, set }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const { items } = body as any;
       if (!Array.isArray(items) || items.length === 0) throw new NotFoundError('items required');
@@ -79,7 +79,7 @@ export const incomingRoutes = new Elysia({ prefix: '/api/incoming-goods', tags: 
 
   .post(
     '/:id/reject',
-    async ({ jwt, params, body, headers, set }) => {
+    async ({ jwt, params, body, headers, set }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const { reason } = body as any;
       if (!reason) throw new NotFoundError('reason required');

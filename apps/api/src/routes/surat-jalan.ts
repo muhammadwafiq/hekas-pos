@@ -21,7 +21,7 @@ import { renderSuratJalanPdf } from '../services/pdf-sj.service.js';
 
 export const suratJalanRoutes = new Elysia({ prefix: '/api/surat-jalan', tags: ['Surat Jalan'] })
 
-  .get('/', async ({ jwt, query, headers }) => {
+  .get('/', async ({ jwt, query, headers }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return suratService.list({
       outletId: query.outletId as string | undefined,
@@ -31,14 +31,14 @@ export const suratJalanRoutes = new Elysia({ prefix: '/api/surat-jalan', tags: [
     });
   })
 
-  .get('/:id', async ({ jwt, params, headers }) => {
+  .get('/:id', async ({ jwt, params, headers }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return suratService.getDetail(params.id);
   })
 
   .post(
     '/',
-    async ({ jwt, body, headers, set }) => {
+    async ({ jwt, body, headers, set }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const result = await suratService.create({
         outletId: body.outletId,
@@ -74,19 +74,19 @@ export const suratJalanRoutes = new Elysia({ prefix: '/api/surat-jalan', tags: [
     }
   )
 
-  .post('/:id/review-gudang', async ({ jwt, params, body, headers }) => {
+  .post('/:id/review-gudang', async ({ jwt, params, body, headers }: any) => {
     const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang']);
     return suratService.reviewGudang(params.id, user, body?.notes);
   })
 
-  .post('/:id/approve', async ({ jwt, params, body, headers }) => {
+  .post('/:id/approve', async ({ jwt, params, body, headers }: any) => {
     const user = await requireRole(await getAuthUser(jwt, headers), ['manager']);
     return suratService.approve(params.id, user, body?.notes);
   })
 
   .post(
     '/:id/reject',
-    async ({ jwt, params, body, headers }) => {
+    async ({ jwt, params, body, headers }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['manager']);
       return suratService.reject(params.id, user, body.reason);
     },
@@ -97,12 +97,12 @@ export const suratJalanRoutes = new Elysia({ prefix: '/api/surat-jalan', tags: [
     }
   )
 
-  .post('/:id/mark-sent', async ({ jwt, params, headers }) => {
+  .post('/:id/mark-sent', async ({ jwt, params, headers }: any) => {
     const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return suratService.markSent(params.id, user);
   })
 
-  .get('/:id/pdf', async ({ jwt, params, headers, set }) => {
+  .get('/:id/pdf', async ({ jwt, params, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     const sj = await suratService.getDetail(params.id);
     const pdf = await renderSuratJalanPdf({ sj, outletName: sj.destination });

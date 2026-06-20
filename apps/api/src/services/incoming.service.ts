@@ -12,7 +12,7 @@ import { db } from '../config/database.js';
 import { logger } from '../config/logger.js';
 import { stocks, stockMovements, stockAdjustments } from '../db/schema/stock.js';
 import { products } from '../db/schema/master.js';
-import { outgoingGoods } from '../db/schema/inventory.js';
+import { incomingGoods, incomingGoodItems } from '../db/schema/inventory.js';
 import { NotFoundError, ValidationError, BusinessRuleError } from '../lib/errors.js';
 import type { AuthUser } from '../lib/auth-helper.js';
 
@@ -21,20 +21,20 @@ export const incomingService = {
     const limit = opts.limit ?? 50;
     const offset = opts.offset ?? 0;
     const conds = [] as any[];
-    if (opts.outletId) conds.push(eq(outgoingGoods.outletId, opts.outletId));
-    if (opts.supplierId) conds.push(eq(outgoingGoods.supplierId, opts.supplierId));
-    if (opts.status) conds.push(eq(outgoingGoods.status, opts.status as any));
+    if (opts.outletId) conds.push(eq(incomingGoods.outletId, opts.outletId));
+    if (opts.supplierId) conds.push(eq(incomingGoods.supplierId, opts.supplierId));
+    if (opts.status) conds.push(eq(incomingGoods.status, opts.status as any));
     return db
       .select()
-      .from(outgoingGoods)
+      .from(incomingGoods)
       .where(conds.length ? and(...conds) : undefined)
-      .orderBy(desc(outgoingGoods.createdAt))
+      .orderBy(desc(incomingGoods.createdAt))
       .limit(limit)
       .offset(offset);
   },
 
   async getDetail(id: string) {
-    const [po] = await db.select().from(outgoingGoods).where(eq(outgoingGoods.id, id)).limit(1);
+    const [po] = await db.select().from(incomingGoods).where(eq(incomingGoods.id, id)).limit(1);
     if (!po) throw new NotFoundError(`PO ${id} not found`);
     const items = await db.select().from(incomingGoodItems).where(eq(incomingGoodItems.incomingGoodId, id));
     return { ...po, items };
@@ -255,8 +255,6 @@ export const incomingService = {
 };
 
 // ===== HELPERS =====
-
-import { incomingGoods, incomingGoodItems } from '../db/schema/inventory.js';
 
 async function generateDocumentNumber(
   tx: any,

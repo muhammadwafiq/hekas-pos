@@ -155,8 +155,8 @@ const app = new Elysia()
     }
 
     // Unauthorized
-    if (code === 'UNAUTHORIZED' || code === 'INVALID_TOKEN') {
-      set.status = 401;
+    if ((code as string) === 'UNAUTHORIZED' || (code as string) === 'INVALID_TOKEN') {
+      (set as any).status = 401;
       return {
         ok: false,
         error: { code: 'UNAUTHORIZED', message: 'Authentication required' },

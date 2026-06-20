@@ -12,7 +12,7 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
 
   // ===== Read (Phase 2 preserved, all roles) =====
 
-  .get('/', async ({ query, jwt, headers }) => {
+  .get('/', async ({ query, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const outletId = (query.outletId as string) || user.outletId!;
     const result = await productService.search({
@@ -29,17 +29,17 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
     return { ok: true, data: result };
   })
 
-  .get('/barcode/:barcode', async ({ params, jwt, headers }) => {
+  .get('/barcode/:barcode', async ({ params, jwt, headers }: any) => {
     await getAuthUser(jwt, headers);
     return { ok: true, data: await productService.getByBarcode(params.barcode) };
   })
 
-  .get('/:id', async ({ params, jwt, headers }) => {
+  .get('/:id', async ({ params, jwt, headers }: any) => {
     await getAuthUser(jwt, headers);
     return { ok: true, data: await productService.getById(params.id) };
   })
 
-  .get('/:id/stock-movements', async ({ params, jwt, headers, query }) => {
+  .get('/:id/stock-movements', async ({ params, jwt, headers, query }: any) => {
     const user = await getAuthUser(jwt, headers);
     const outletId = (query.outletId as string) || user.outletId!;
     return {
@@ -47,7 +47,6 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
       data: await stockService.getMovements({
         productId: params.id,
         outletId,
-        type: query.type as any,
         limit: query.limit ? Number(query.limit) : undefined,
         offset: query.offset ? Number(query.offset) : undefined,
       }),
@@ -55,7 +54,6 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
   }, {
     query: t.Object({
       outletId: t.Optional(t.String()),
-      type: t.Optional(t.String()),
       limit: t.Optional(t.Number()),
       offset: t.Optional(t.Number()),
     }),
@@ -63,7 +61,7 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
 
   // ===== Admin Gudang CRUD (Phase 3) =====
 
-  .post('/', async ({ body, jwt, headers }) => {
+  .post('/', async ({ body, jwt, headers }: any) => {
     const user = await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return {
       ok: true,
@@ -89,7 +87,7 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
     }),
   })
 
-  .patch('/:id', async ({ params, body, jwt, headers }) => {
+  .patch('/:id', async ({ params, body, jwt, headers }: any) => {
     await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return { ok: true, data: await productService.update(params.id, body) };
   }, {
@@ -104,18 +102,18 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
       stockMin: t.Optional(t.Number()),
       stockMax: t.Optional(t.Number()),
       unit: t.Optional(t.String()),
-      status: t.Optional(t.Union(['aktif', 'stok_tipis', 'habis', 'nonaktif'])),
+      status: t.Optional(t.UnionEnum(['aktif', 'stok_tipis', 'habis', 'nonaktif'])),
     }),
   })
 
-  .delete('/:id', async ({ params, jwt, headers }) => {
+  .delete('/:id', async ({ params, jwt, headers }: any) => {
     await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return { ok: true, data: await productService.softDelete(params.id) };
   })
 
   // ===== Image management =====
 
-  .post('/:id/image', async ({ params, request, jwt, headers }) => {
+  .post('/:id/image', async ({ params, request, jwt, headers }: any) => {
     await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     const formData = await request.formData();
     const file = formData.get('file');
@@ -134,19 +132,19 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
     return { ok: true, data: image };
   })
 
-  .delete('/:id/image/:imageId', async ({ params, jwt, headers }) => {
+  .delete('/:id/image/:imageId', async ({ params, jwt, headers }: any) => {
     await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return { ok: true, data: await productService.deleteImage(params.id, params.imageId) };
   })
 
-  .post('/:id/image/:imageId/primary', async ({ params, jwt, headers }) => {
+  .post('/:id/image/:imageId/primary', async ({ params, jwt, headers }: any) => {
     await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return { ok: true, data: await productService.setPrimaryImage(params.id, params.imageId) };
   })
 
   // ===== Stock operations =====
 
-  .post('/:id/restock', async ({ params, body, jwt, headers }) => {
+  .post('/:id/restock', async ({ params, body, jwt, headers }: any) => {
     const user = await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return {
       ok: true,
@@ -166,7 +164,7 @@ export const productRoutes = new Elysia({ prefix: '/api/products', tags: ['Produ
     }),
   })
 
-  .post('/restock-bulk', async ({ body, jwt, headers }) => {
+  .post('/restock-bulk', async ({ body, jwt, headers }: any) => {
     const user = await requireRole(jwt, headers, ['admin_gudang', 'manager']);
     return {
       ok: true,

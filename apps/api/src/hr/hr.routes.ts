@@ -44,7 +44,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
   // ====== Employees ======
   .get(
     '/employees',
-    async ({ jwt, query, headers }) => {
+    async ({ jwt, query, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -64,7 +64,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .get(
     '/employees/:id',
-    async ({ jwt, params, headers }) => {
+    async ({ jwt, params, headers }: any) => {
       await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -78,7 +78,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .post(
     '/employees',
-    async ({ jwt, body, headers }) => {
+    async ({ jwt, body, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), ['manager']);
       const outletId = ensureOutlet(user.outletId);
       return hrService.createEmployee({
@@ -102,7 +102,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .patch(
     '/employees/:id',
-    async ({ jwt, params, body, headers }) => {
+    async ({ jwt, params, body, headers }: any) => {
       await authorize(await getAuthUser(jwt, headers), ['manager']);
       return hrService.updateEmployee(params.id, body);
     },
@@ -124,7 +124,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
   // ====== Attendance ======
   .get(
     '/attendance',
-    async ({ jwt, query, headers }) => {
+    async ({ jwt, query, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -148,7 +148,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .get(
     '/attendance/today',
-    async ({ jwt, query, headers }) => {
+    async ({ jwt, query, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -168,7 +168,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .get(
     '/attendance/today-summary',
-    async ({ jwt, headers }) => {
+    async ({ jwt, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -180,7 +180,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .post(
     '/attendance/clock-in',
-    async ({ jwt, body, headers }) => {
+    async ({ jwt, body, headers }: any) => {
       // kasir/admin_gudang/manager can clock-in their own record
       const user = await authorize(await getAuthUser(jwt, headers), [
         'kasir',
@@ -208,7 +208,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .post(
     '/attendance/clock-out',
-    async ({ jwt, body, headers }) => {
+    async ({ jwt, body, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'kasir',
         'admin_gudang',
@@ -231,7 +231,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
   // ====== Leave requests ======
   .get(
     '/leave-requests',
-    async ({ jwt, query, headers }) => {
+    async ({ jwt, query, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -260,7 +260,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .post(
     '/leave-requests',
-    async ({ jwt, body, headers }) => {
+    async ({ jwt, body, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -295,7 +295,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .patch(
     '/leave-requests/:id/approve',
-    async ({ jwt, params, headers }) => {
+    async ({ jwt, params, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), ['manager']);
       return hrService.approveLeaveRequest(params.id, user.id);
     },
@@ -306,7 +306,7 @@ export const hrRoutes = new Elysia({ prefix: '/api/hr', tags: ['HR'] })
 
   .patch(
     '/leave-requests/:id/reject',
-    async ({ jwt, params, body, headers }) => {
+    async ({ jwt, params, body, headers }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), ['manager']);
       return hrService.rejectLeaveRequest(params.id, user.id, body.rejectReason);
     },

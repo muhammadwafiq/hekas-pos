@@ -49,7 +49,7 @@ const VoidOrderSchema = z.object({
 
 export const orderRoutes = new Elysia({ prefix: '/api/orders', tags: ['Orders'] })
   // Create draft
-  .post('/draft', async ({ body, jwt, headers }) => {
+  .post('/draft', async ({ body, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const parsed = DraftOrderSchema.safeParse(body);
     if (!parsed.success) throw new ValidationError('Invalid order', { issues: parsed.error.issues });
@@ -68,7 +68,7 @@ export const orderRoutes = new Elysia({ prefix: '/api/orders', tags: ['Orders'] 
   })
 
   // Complete order (ATOMIC)
-  .post('/complete', async ({ body, jwt, headers }) => {
+  .post('/complete', async ({ body, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const parsed = CompleteOrderSchema.safeParse(body);
     if (!parsed.success) throw new ValidationError('Invalid order', { issues: parsed.error.issues });
@@ -92,7 +92,7 @@ export const orderRoutes = new Elysia({ prefix: '/api/orders', tags: ['Orders'] 
   })
 
   // Void order (manager PIN required)
-  .post('/:id/void', async ({ params, body, jwt, headers, request }) => {
+  .post('/:id/void', async ({ params, body, jwt, headers, request }: any) => {
     const user = await getAuthUser(jwt, headers);
     const parsed = VoidOrderSchema.safeParse(body);
     if (!parsed.success) throw new ValidationError('Invalid void request', { issues: parsed.error.issues });
@@ -114,7 +114,7 @@ export const orderRoutes = new Elysia({ prefix: '/api/orders', tags: ['Orders'] 
   })
 
   // Get by id
-  .get('/:id', async ({ params, jwt, headers }) => {
+  .get('/:id', async ({ params, jwt, headers }: any) => {
     await getAuthUser(jwt, headers);
     const order = await orderService.getOrder(params.id);
     if (!order) throw new UnauthorizedError('Order not found');
@@ -122,7 +122,7 @@ export const orderRoutes = new Elysia({ prefix: '/api/orders', tags: ['Orders'] 
   })
 
   // List
-  .get('/', async ({ query, jwt, headers }) => {
+  .get('/', async ({ query, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     return {
       ok: true,

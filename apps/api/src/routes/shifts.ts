@@ -21,7 +21,7 @@ const EndShiftSchema = z.object({
 });
 
 export const shiftRoutes = new Elysia({ prefix: '/api/shifts', tags: ['Shifts'] })
-  .post('/start', async ({ body, user: _u, jwt, headers }) => {
+  .post('/start', async ({ body, user: _u, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const parsed = StartShiftSchema.safeParse(body);
     if (!parsed.success) throw new ValidationError('Invalid request', { issues: parsed.error.issues });
@@ -35,7 +35,7 @@ export const shiftRoutes = new Elysia({ prefix: '/api/shifts', tags: ['Shifts'] 
     return { ok: true, data: shift };
   })
 
-  .post('/:id/end', async ({ params, body, jwt, headers }) => {
+  .post('/:id/end', async ({ params, body, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const parsed = EndShiftSchema.safeParse(body);
     if (!parsed.success) throw new ValidationError('Invalid request', { issues: parsed.error.issues });
@@ -48,18 +48,18 @@ export const shiftRoutes = new Elysia({ prefix: '/api/shifts', tags: ['Shifts'] 
     return { ok: true, data: shift };
   })
 
-  .get('/current', async ({ jwt, headers }) => {
+  .get('/current', async ({ jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const shift = await shiftService.getCurrentShift(user.id);
     return { ok: true, data: shift };
   })
 
-  .get('/:id', async ({ params, jwt, headers }) => {
+  .get('/:id', async ({ params, jwt, headers }: any) => {
     await getAuthUser(jwt, headers);
     return { ok: true, data: await shiftService.getById(params.id) };
   })
 
-  .get('/', async ({ query, jwt, headers }) => {
+  .get('/', async ({ query, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     return {
       ok: true,

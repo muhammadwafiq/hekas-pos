@@ -13,7 +13,7 @@ import { imageUpload } from '../lib/image-upload.js';
 import { NotFoundError } from '../lib/errors.js';
 
 export const inventoryRoutes = new Elysia({ prefix: '/api/inventory', tags: ['Inventory'] })
-  .get('/summary', async ({ jwt, query, headers, set }) => {
+  .get('/summary', async ({ jwt, query, headers, set }: any) => {
     const user = await requireRole(
       await getAuthUser(jwt, headers),
       ['admin_gudang', 'manager'],
@@ -25,7 +25,7 @@ export const inventoryRoutes = new Elysia({ prefix: '/api/inventory', tags: ['In
     }),
   })
 
-  .post('/restock', async ({ jwt, body, headers, set }) => {
+  .post('/restock', async ({ jwt, body, headers, set }: any) => {
     const user = await requireRole(
       await getAuthUser(jwt, headers),
       ['admin_gudang', 'manager'],
@@ -46,7 +46,7 @@ export const inventoryRoutes = new Elysia({ prefix: '/api/inventory', tags: ['In
     }),
   })
 
-  .post('/restock-bulk', async ({ jwt, body, headers, set }) => {
+  .post('/restock-bulk', async ({ jwt, body, headers, set }: any) => {
     const user = await requireRole(
       await getAuthUser(jwt, headers),
       ['admin_gudang', 'manager'],
@@ -67,7 +67,7 @@ export const inventoryRoutes = new Elysia({ prefix: '/api/inventory', tags: ['In
     }),
   })
 
-  .post('/adjust', async ({ jwt, body, headers, set }) => {
+  .post('/adjust', async ({ jwt, body, headers, set }: any) => {
     const user = await requireRole(
       await getAuthUser(jwt, headers),
       ['admin_gudang', 'manager'],
@@ -92,7 +92,7 @@ export const inventoryRoutes = new Elysia({ prefix: '/api/inventory', tags: ['In
     }),
   })
 
-  .get('/low-stock', async ({ jwt, query, headers, set }) => {
+  .get('/low-stock', async ({ jwt, query, headers, set }: any) => {
     const user = await requireRole(
       await getAuthUser(jwt, headers),
       ['admin_gudang', 'manager', 'kasir'],
@@ -103,12 +103,12 @@ export const inventoryRoutes = new Elysia({ prefix: '/api/inventory', tags: ['In
   });
 
 export const productImageRoutes = new Elysia({ prefix: '/api/products/:id/images', tags: ['Product Images'] })
-  .get('/', async ({ params, jwt, headers, set }) => {
+  .get('/', async ({ params, jwt, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager', 'kasir']);
     return productImageRepo.listByProduct(params.id);
   })
 
-  .post('/', async ({ params, body, jwt, headers, set }) => {
+  .post('/', async ({ params, body, jwt, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     // multipart upload — body must be file
     const file = body as any;
@@ -116,19 +116,19 @@ export const productImageRoutes = new Elysia({ prefix: '/api/products/:id/images
     return productService.uploadImage(params.id, file);
   })
 
-  .delete('/:imageId', async ({ params, jwt, headers, set }) => {
+  .delete('/:imageId', async ({ params, jwt, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return productService.deleteImage(params.id, params.imageId);
   })
 
-  .put('/:imageId/primary', async ({ params, jwt, headers, set }) => {
+  .put('/:imageId/primary', async ({ params, jwt, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return productService.setPrimaryImage(params.id, params.imageId);
   });
 
 /** Static serving for uploaded images. */
 export const uploadsRoutes = new Elysia({ prefix: '/api/uploads', tags: ['Uploads'] })
-  .get('/*', async ({ jwt, params, set }) =>  {
+  .get('/*', async ({ jwt, params, set }: any) =>  {
     const path = (params as any)['*'] ?? '';
     const absPath = imageUpload.resolvePath(path);
     const file = Bun.file(absPath);

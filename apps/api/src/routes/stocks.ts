@@ -7,7 +7,7 @@ import { stockService } from '../services/stock.service.js';
 import { getAuthUser } from '../lib/auth-helper.js';
 
 export const stockRoutes = new Elysia({ prefix: '/api/stocks', tags: ['Stock'] })
-  .get('/product/:productId', async ({ params, jwt, headers }) => {
+  .get('/product/:productId', async ({ params, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     return {
       ok: true,
@@ -15,7 +15,7 @@ export const stockRoutes = new Elysia({ prefix: '/api/stocks', tags: ['Stock'] }
     };
   })
 
-  .get('/product/:productId/movements', async ({ params, jwt, headers, query }) => {
+  .get('/product/:productId/movements', async ({ params, jwt, headers, query }: any) => {
     const user = await getAuthUser(jwt, headers);
     return {
       ok: true,
@@ -28,7 +28,7 @@ export const stockRoutes = new Elysia({ prefix: '/api/stocks', tags: ['Stock'] }
     };
   })
 
-  .get('/movements', async ({ jwt, headers, query }) => {
+  .get('/movements', async ({ jwt, headers, query }: any) => {
     const user = await getAuthUser(jwt, headers);
     return {
       ok: true,
@@ -40,7 +40,7 @@ export const stockRoutes = new Elysia({ prefix: '/api/stocks', tags: ['Stock'] }
     };
   })
 
-  .get('/low-stock', async ({ jwt, headers }) => {
+  .get('/low-stock', async ({ jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     return { ok: true, data: await stockService.getLowStock(user.outletId!) };
   });

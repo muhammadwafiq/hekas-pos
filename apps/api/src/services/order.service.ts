@@ -433,7 +433,6 @@ export const orderService = {
           voidedAt: new Date(),
           voidedBy: opts.voidedBy,
           voidReason: opts.voidReason,
-          updatedAt: new Date(),
         })
         .where(eq(orders.id, opts.orderId))
         .returning();

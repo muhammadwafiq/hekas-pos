@@ -10,7 +10,7 @@ type Role = 'kasir' | 'admin_gudang' | 'manager' | 'super_admin';
 
 export function requireRole(...allowedRoles: Role[]) {
   return new Elysia({ name: `rbac-${allowedRoles.join('-')}` })
-    .onBeforeHandle(({ user }) => {
+    .onBeforeHandle(({ user }: any) => {
       if (!user) throw new UnauthorizedError('Authentication required');
       if (!allowedRoles.includes(user.role as Role)) {
         throw new ForbiddenError(`Role '${user.role}' not allowed. Required: ${allowedRoles.join(', ')}`);

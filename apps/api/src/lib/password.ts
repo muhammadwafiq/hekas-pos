@@ -3,17 +3,18 @@
  * PIN hashing uses same primitive but shorter params for speed.
  */
 
-import { hash, verify, Algorithm } from '@node-rs/argon2';
+import { hash, verify } from '@node-rs/argon2';
+import type { Algorithm } from '@node-rs/argon2';
 
 const PARAMS_PASSWORD = {
-  algorithm: Algorithm.Argon2id,
+  algorithm: 2 /* Algorithm.Argon2id */ as Algorithm,
   memoryCost: 19456, // 19 MB
   timeCost: 2,
   parallelism: 1,
 };
 
 const PARAMS_PIN = {
-  algorithm: Algorithm.Argon2id,
+  algorithm: 2 /* Algorithm.Argon2id */ as Algorithm,
   memoryCost: 4096, // 4 MB — PIN only, faster
   timeCost: 2,
   parallelism: 1,

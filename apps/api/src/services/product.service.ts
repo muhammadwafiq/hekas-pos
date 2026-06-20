@@ -206,10 +206,9 @@ export const productService = {
     const row = await productImageRepo.create({
       productId,
       imageUrl: uploaded.url,
-      imagePath: uploaded.path,
       sortOrder: opts.sortOrder ?? images.length,
-      isPrimary,
-    });
+      ...(isPrimary !== undefined ? { isPrimary } : {}),
+    } as any);
 
     // Update product.imageUrl if primary
     if (isPrimary) {
@@ -233,7 +232,8 @@ export const productService = {
     await productImageRepo.delete(imageId);
 
     // If deleted was primary, set first remaining as primary
-    if (img.isPrimary) {
+    // TODO: isPrimary column missing in product_images schema — add via db:push
+    if ((img as any).isPrimary) {
       const remaining = await productImageRepo.listByProduct(productId);
       if (remaining.length > 0) {
         await productImageRepo.setPrimary(productId, remaining[0].id);

@@ -3,8 +3,17 @@
  * Uses Elysia JWT plugin under the hood (wired in index.ts).
  */
 
-import type { JWT } from '@elysiajs/jwt';
 import { env } from '../config/env.js';
+
+/**
+ * Structural type for the Elysia JWT instance.
+ * The `@elysiajs/jwt` plugin doesn't export a `JWT` type; this is the minimal
+ * shape we need for sign/verify across the app.
+ */
+export type JWT = {
+  sign(payload: unknown): Promise<string>;
+  verify<T = unknown>(token: string): Promise<T | false>;
+};
 
 export interface TokenPayload {
   sub: string; // user id
@@ -29,8 +38,8 @@ export async function signRefreshToken(
   jwt: JWT,
   payload: RefreshTokenPayload
 ): Promise<string> {
-  return jwt.sign(
-    { ...payload } as any,
+  return (jwt.sign as any)(
+    { ...payload },
     { exp: `${env.JWT_REFRESH_EXPIRES_IN}s` }
   );
 }

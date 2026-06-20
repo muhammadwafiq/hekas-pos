@@ -68,7 +68,7 @@ function setBinaryResponse(
 export const reportRoutes = new Elysia({ prefix: '/api/reports', tags: ['Reports'] })
   .get(
     '/sales',
-    async ({ jwt, query, headers, set }) => {
+    async ({ jwt, query, headers, set }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -90,7 +90,7 @@ export const reportRoutes = new Elysia({ prefix: '/api/reports', tags: ['Reports
   )
   .get(
     '/inventory',
-    async ({ jwt, query, headers, set }) => {
+    async ({ jwt, query, headers, set }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',
@@ -109,7 +109,7 @@ export const reportRoutes = new Elysia({ prefix: '/api/reports', tags: ['Reports
   )
   .get(
     '/transactions',
-    async ({ jwt, query, headers, set }) => {
+    async ({ jwt, query, headers, set }: any) => {
       const user = await authorize(await getAuthUser(jwt, headers), [
         'manager',
         'admin_gudang',

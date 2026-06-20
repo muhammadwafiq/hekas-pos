@@ -6,6 +6,7 @@ try {
     shiftCode: 'TEST-SHIFT-1',
     outletId: 'd3d1143e-984f-4185-b182-50b5dd3a3c8c',
     cashierId: 'a073aa5a-a57f-435e-8f60-263043fcd587',
+    cashierName: 'Test Cashier',
     startedAt: new Date(),
     startingCash: '100000',
     expectedCash: '100000',

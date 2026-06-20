@@ -23,7 +23,7 @@ export interface AuthUser {
 }
 
 export const authMiddleware = new Elysia({ name: 'auth' })
-  .onBeforeHandle(async ({ jwt, headers }) => {
+  .onBeforeHandle(async ({ jwt, headers }: any) => {
     const auth = headers.authorization;
     if (!auth?.startsWith('Bearer ')) {
       throw new UnauthorizedError('Missing or invalid Authorization header');
@@ -46,7 +46,7 @@ export const authMiddleware = new Elysia({ name: 'auth' })
     // Stash on request via set.headers is not great; we re-fetch in handler via a helper
     // Alternative: use Elysia state
   })
-  .resolve(async ({ jwt, headers, set }): Promise<{ user: AuthUser }> => {
+  .resolve(async ({ jwt, headers, set }: any): Promise<{ user: AuthUser }> => {
     // Second pass — derive user into context
     const auth = headers.authorization;
     if (!auth?.startsWith('Bearer ')) {

@@ -3,12 +3,13 @@
  * Inline approach (not middleware) for guaranteed behavior.
  */
 
-import type { JWT } from '@elysiajs/jwt';
 import { eq } from 'drizzle-orm';
 import { db } from '../config/database.js';
 import { users } from '../db/schema/auth.js';
-import { verifyAccessToken } from './jwt.js';
+import { verifyAccessToken, type JWT } from './jwt.js';
 import { UnauthorizedError, ForbiddenError } from './errors.js';
+
+export type { JWT };
 
 export interface AuthUser {
   id: string;

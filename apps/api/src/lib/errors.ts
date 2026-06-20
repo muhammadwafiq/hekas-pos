@@ -86,7 +86,8 @@ export class BusinessRuleError extends AppError {
 export class InternalError extends AppError {
   constructor(message = 'Internal server error', context?: ErrorContext, cause?: unknown) {
     super('INTERNAL_ERROR', message, 500, context, cause);
-    this.isOperational = false;
+    // isOperational is readonly on parent — use Object.defineProperty
+    Object.defineProperty(this, 'isOperational', { value: false, writable: true });
   }
 }
 

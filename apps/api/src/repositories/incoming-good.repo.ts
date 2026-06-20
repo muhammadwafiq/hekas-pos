@@ -11,7 +11,7 @@ import { NotFoundError } from '../lib/errors.js';
 export const incomingRepo = {
   async list(opts: {
     outletId: string;
-    status?: 'draft' | 'menunggu_verifikasi' | 'diverifikasi' | 'ditolak';
+    status?: 'draft' | 'pending' | 'verified' | 'rejected';
     supplierId?: string;
     limit?: number;
     offset?: number;
@@ -19,7 +19,7 @@ export const incomingRepo = {
     const limit = Math.min(opts.limit ?? 50, 200);
     const offset = opts.offset ?? 0;
     const conditions: any[] = [eq(incomingGoods.outletId, opts.outletId)];
-    if (opts.status) conditions.push(eq(incomingGoods.status, opts.status));
+    if (opts.status) conditions.push(eq(incomingGoods.status, opts.status as any));
     if (opts.supplierId) conditions.push(eq(incomingGoods.supplierId, opts.supplierId));
     const where = and(...conditions);
 

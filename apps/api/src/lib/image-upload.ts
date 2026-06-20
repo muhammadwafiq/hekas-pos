@@ -9,7 +9,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { randomBytes } from 'node:crypto';
-import { BadRequestError, ValidationError } from './errors.js';
+import { ValidationError } from './errors.js';
 import { logger } from '../config/logger.js';
 
 const UPLOAD_ROOT = process.env.UPLOAD_ROOT ?? join(process.cwd(), 'uploads');

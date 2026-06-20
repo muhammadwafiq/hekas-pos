@@ -15,7 +15,7 @@ const SaveDraftSchema = z.object({
 });
 
 export const heldDraftRoutes = new Elysia({ prefix: '/api/held-drafts', tags: ['Held Drafts'] })
-  .post('/', async ({ body, jwt, headers }) => {
+  .post('/', async ({ body, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     const parsed = SaveDraftSchema.safeParse(body);
     if (!parsed.success) throw new ValidationError('Invalid request', { issues: parsed.error.issues });
@@ -30,12 +30,12 @@ export const heldDraftRoutes = new Elysia({ prefix: '/api/held-drafts', tags: ['
     return { ok: true, data: draft };
   })
 
-  .get('/:id', async ({ params, jwt, headers }) => {
+  .get('/:id', async ({ params, jwt, headers }: any) => {
     await getAuthUser(jwt, headers);
     return { ok: true, data: await heldDraftService.getById(params.id) };
   })
 
-  .get('/', async ({ query, jwt, headers }) => {
+  .get('/', async ({ query, jwt, headers }: any) => {
     const user = await getAuthUser(jwt, headers);
     return {
       ok: true,
@@ -46,7 +46,7 @@ export const heldDraftRoutes = new Elysia({ prefix: '/api/held-drafts', tags: ['
     };
   })
 
-  .delete('/:id', async ({ params, jwt, headers }) => {
+  .delete('/:id', async ({ params, jwt, headers }: any) => {
     await getAuthUser(jwt, headers);
     await heldDraftService.delete(params.id);
     return { ok: true, data: { message: 'Draft deleted' } };

@@ -10,24 +10,24 @@ import { NotFoundError } from '../lib/errors.js';
 
 export const outgoingRoutes = new Elysia({ prefix: '/api/outgoing-goods', tags: ['Outgoing Goods'] })
 
-  .get('/', async ({ jwt, query, headers, set }) => {
+  .get('/', async ({ jwt, query, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     const outletId = query.outletId as string;
     const status = query.status as any;
     const limit = Number(query.limit ?? 50);
     const offset = Number(query.offset ?? 0);
     if (!outletId) throw new NotFoundError('outletId required');
-    return outgoingService.list(outletId, status, limit, offset);
+    return outgoingService.list({ outletId, status, limit, offset });
   })
 
-  .get('/:id', async ({ jwt, params, headers, set }) => {
+  .get('/:id', async ({ jwt, params, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return outgoingService.getDetail(params.id);
   })
 
   .post(
     '/',
-    async ({ jwt, body, headers, set }) => {
+    async ({ jwt, body, headers, set }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const { outletId, destination, notes, items, referenceType, referenceId } = body as any;
       if (!outletId || !destination || !Array.isArray(items) || items.length === 0) {
@@ -49,7 +49,7 @@ export const outgoingRoutes = new Elysia({ prefix: '/api/outgoing-goods', tags: 
 
   .post(
     '/:id/pick',
-    async ({ jwt, params, body, headers, set }) => {
+    async ({ jwt, params, body, headers, set }: any) => {
       const user = await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const { items } = body as any;
       if (!Array.isArray(items) || items.length === 0) throw new NotFoundError('items required');
@@ -67,14 +67,14 @@ export const outgoingRoutes = new Elysia({ prefix: '/api/outgoing-goods', tags: 
     }
   )
 
-  .post('/:id/mark-sent', async ({ params, jwt, headers, set }) => {
+  .post('/:id/mark-sent', async ({ params, jwt, headers, set }: any) => {
     await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
     return outgoingService.markSent(params.id);
   })
 
   .post(
     '/:id/cancel',
-    async ({ params, jwt, body, headers, set }) => {
+    async ({ params, jwt, body, headers, set }: any) => {
       await requireRole(await getAuthUser(jwt, headers), ['admin_gudang', 'manager']);
       const { reason } = body as any;
       if (!reason) throw new NotFoundError('reason required');

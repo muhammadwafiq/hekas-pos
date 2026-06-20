@@ -16,7 +16,6 @@ const connectionString = isTest && env.DATABASE_URL_TEST
 /** postgres-js client (raw query access) */
 export const sql = postgres(connectionString, {
   max: env.DATABASE_POOL_MAX,
-  min: env.DATABASE_POOL_MIN,
   idle_timeout: 30,
   connect_timeout: 10,
   prepare: false, // disable prepared statements for pgbouncer compatibility

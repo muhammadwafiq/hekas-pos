@@ -14,7 +14,7 @@ import { UnauthorizedError, ValidationError } from '../lib/errors.js';
 import { LoginSchema } from '@hekas/shared';
 
 export const authRoutes = new Elysia({ prefix: '/api/auth', tags: ['Auth'] })
-  .post('/login', async ({ body, jwt, request }) => {
+  .post('/login', async ({ body, jwt, request }: any) => {
     const parsed = LoginSchema.safeParse(body);
     if (!parsed.success) {
       throw new ValidationError('Invalid login payload', {
@@ -110,7 +110,7 @@ export const authRoutes = new Elysia({ prefix: '/api/auth', tags: ['Auth'] })
     };
   })
 
-  .get('/me', async ({ jwt, headers }) => {
+  .get('/me', async ({ jwt, headers }: any) => {
     const auth = headers.authorization;
     if (!auth?.startsWith('Bearer ')) {
       throw new UnauthorizedError('Missing or invalid Authorization header');

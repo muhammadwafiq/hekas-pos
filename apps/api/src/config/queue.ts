@@ -12,15 +12,13 @@ let boss: PgBoss | null = null;
 export async function startQueue(): Promise<PgBoss> {
   if (boss) return boss;
 
-  boss = new PgBoss({
+  boss = new (PgBoss as any)({
     connectionString: env.DATABASE_URL,
     schema: 'pgboss',
     retryLimit: 5,
     retryBackoff: true, // exponential
     retryDelay: 30, // 30s initial
     workerInterval: 2,
-    // Pool
-    max: 10,
   });
 
   boss.on('error', (err) => logger.error({ err }, 'pg-boss error'));
@@ -38,7 +36,7 @@ export function getQueue(): PgBoss {
 
 export async function stopQueue(): Promise<void> {
   if (boss) {
-    await boss.stop({ graceful: true, wait: true });
+    await boss.stop({ graceful: true });
     boss = null;
     logger.info('pg-boss queue stopped');
   }
