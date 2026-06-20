@@ -2,7 +2,7 @@
  * Product repository — data access for products.
  */
 
-import { and, eq, like, or, sql, ilike, desc, asc } from 'drizzle-orm';
+import { and, eq, like, or, sql, ilike, desc, asc, type SQL} from 'drizzle-orm';
 import { db } from '../config/database.js';
 import { products } from '../db/schema/master.js';
 
@@ -23,7 +23,7 @@ export const productRepo = {
   },
 
   async search(opts: { q?: string; outletId?: string; categoryId?: string; limit?: number; offset?: number }) {
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
     if (opts.outletId) conditions.push(eq(products.outletId, opts.outletId));
     if (opts.categoryId) conditions.push(eq(products.categoryId, opts.categoryId));
     if (opts.q) {
@@ -43,7 +43,7 @@ export const productRepo = {
   },
 
   async list(opts: { outletId: string; categoryId?: string; limit?: number; offset?: number }) {
-    const conditions: any[] = [eq(products.outletId, opts.outletId)];
+    const conditions: SQL[] = [eq(products.outletId, opts.outletId)];
     if (opts.categoryId) conditions.push(eq(products.categoryId, opts.categoryId));
     return db
       .select()
@@ -55,7 +55,7 @@ export const productRepo = {
   },
 
   async count(opts: { outletId: string; categoryId?: string; q?: string }) {
-    const conditions: any[] = [eq(products.outletId, opts.outletId)];
+    const conditions: SQL[] = [eq(products.outletId, opts.outletId)];
     if (opts.categoryId) conditions.push(eq(products.categoryId, opts.categoryId));
     if (opts.q) {
       const q = `%${opts.q}%`;

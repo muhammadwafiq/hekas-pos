@@ -3,8 +3,8 @@
  * PO header CRUD + status transitions.
  */
 
-import { eq, and, sql, desc } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { eq, and, sql, desc, type SQL} from 'drizzle-orm';
+import { db, type DbOrTx} from '../config/database.js';
 import { incomingGoods } from '../db/schema/inventory.js';
 import { NotFoundError } from '../lib/errors.js';
 
@@ -18,7 +18,7 @@ export const incomingRepo = {
   }) {
     const limit = Math.min(opts.limit ?? 50, 200);
     const offset = opts.offset ?? 0;
-    const conditions: any[] = [eq(incomingGoods.outletId, opts.outletId)];
+    const conditions: SQL[] = [eq(incomingGoods.outletId, opts.outletId)];
     if (opts.status) conditions.push(eq(incomingGoods.status, opts.status as any));
     if (opts.supplierId) conditions.push(eq(incomingGoods.supplierId, opts.supplierId));
     const where = and(...conditions);
@@ -36,12 +36,12 @@ export const incomingRepo = {
     return row;
   },
 
-  async create(data: typeof incomingGoods.$inferInsert, tx: any = db) {
+  async create(data: typeof incomingGoods.$inferInsert, tx: DbOrTx = db) {
     const [row] = await tx.insert(incomingGoods).values(data).returning();
     return row!;
   },
 
-  async update(id: string, data: Partial<typeof incomingGoods.$inferInsert>, tx: any = db) {
+  async update(id: string, data: Partial<typeof incomingGoods.$inferInsert>, tx: DbOrTx = db) {
     const [row] = await tx.update(incomingGoods).set({ ...data, updatedAt: new Date() }).where(eq(incomingGoods.id, id)).returning();
     if (!row) throw new NotFoundError(`Incoming goods ${id} not found`);
     return row;

@@ -2,8 +2,8 @@
  * Stock repository — current stock + movements.
  */
 
-import { and, eq, sql, desc, inArray } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { and, eq, sql, desc, inArray, type SQL} from 'drizzle-orm';
+import { db, type DbOrTx} from '../config/database.js';
 import { stocks, stockMovements } from '../db/schema/stock.js';
 import { products } from '../db/schema/master.js';
 
@@ -38,7 +38,7 @@ export const stockRepo = {
   },
 
   async listMovements(opts: { productId?: string; outletId: string; limit?: number; offset?: number }) {
-    const conditions: any[] = [eq(stockMovements.outletId, opts.outletId)];
+    const conditions: SQL[] = [eq(stockMovements.outletId, opts.outletId)];
     if (opts.productId) conditions.push(eq(stockMovements.productId, opts.productId));
     return db
       .select()
@@ -49,13 +49,13 @@ export const stockRepo = {
       .offset(opts.offset ?? 0);
   },
 
-  async createMovement(movement: typeof stockMovements.$inferInsert, tx: any = db) {
+  async createMovement(movement: typeof stockMovements.$inferInsert, tx: DbOrTx = db) {
     const [row] = await tx.insert(stockMovements).values(movement).returning();
     return row;
   },
 
   /** Atomic decrement with row lock — caller must be inside transaction */
-  async decrementStock(productId: string, outletId: string, qty: number, tx: any) {
+  async decrementStock(productId: string, outletId: string, qty: number, tx: DbOrTx) {
     const [row] = await tx
       .update(stocks)
       .set({ quantity: sql`${stocks.quantity} - ${qty}`, updatedAt: new Date() })
@@ -65,7 +65,7 @@ export const stockRepo = {
   },
 
   /** Atomic increment — caller must be inside transaction */
-  async incrementStock(productId: string, outletId: string, qty: number, tx: any) {
+  async incrementStock(productId: string, outletId: string, qty: number, tx: DbOrTx) {
     const [row] = await tx
       .update(stocks)
       .set({ quantity: sql`${stocks.quantity} + ${qty}`, updatedAt: new Date() })

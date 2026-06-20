@@ -3,11 +3,11 @@
  */
 
 import { eq } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { db, type DbOrTx} from '../config/database.js';
 import { payments } from '../db/schema/pos.js';
 
 export const paymentRepo = {
-  async create(payment: typeof payments.$inferInsert, tx: any = db) {
+  async create(payment: typeof payments.$inferInsert, tx: DbOrTx = db) {
     const [row] = await tx.insert(payments).values(payment).returning();
     return row;
   },

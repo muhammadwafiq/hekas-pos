@@ -3,7 +3,7 @@
  * Phase 3 Gate 2 — Admin Gudang.
  */
 
-import { eq, sql, and, ilike } from 'drizzle-orm';
+import { eq, sql, and, ilike, type SQL} from 'drizzle-orm';
 import { db } from '../config/database.js';
 import { suppliers } from '../db/schema/master.js';
 import { NotFoundError } from '../lib/errors.js';
@@ -12,7 +12,7 @@ export const supplierRepo = {
   async list(opts: { q?: string; active?: boolean; limit?: number; offset?: number } = {}) {
     const limit = Math.min(opts.limit ?? 50, 200);
     const offset = opts.offset ?? 0;
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
     if (opts.q) conditions.push(ilike(suppliers.name, `%${opts.q}%`));
     if (opts.active !== undefined) conditions.push(eq(suppliers.isActive, opts.active));
 

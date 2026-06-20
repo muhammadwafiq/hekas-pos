@@ -3,7 +3,7 @@
  * Phase 4 Gate 3.
  */
 
-import { eq, and, sql, lt, gte, lte } from 'drizzle-orm';
+import { eq, and, sql, lt, gte, lte, type SQL} from 'drizzle-orm';
 import { db } from '../config/database.js';
 import { notificationQueue, telegramMessages } from '../db/schema/telegram.js';
 
@@ -75,7 +75,7 @@ export const notificationQueueRepo = {
   },
 
   async stats(opts: { since?: Date } = {}) {
-    const conds: any[] = [];
+    const conds: SQL[] = [];
     if (opts.since) conds.push(gte(notificationQueue.createdAt, opts.since));
     const where = conds.length ? and(...conds) : undefined;
     const rows = await db

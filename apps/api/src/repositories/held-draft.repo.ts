@@ -2,12 +2,12 @@
  * Held-draft repository — saved incomplete orders (held at POS).
  */
 
-import { and, eq, desc } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { and, eq, desc, type SQL} from 'drizzle-orm';
+import { db, type DbOrTx} from '../config/database.js';
 import { heldDrafts } from '../db/schema/pos.js';
 
 export const heldDraftRepo = {
-  async create(draft: typeof heldDrafts.$inferInsert, tx: any = db) {
+  async create(draft: typeof heldDrafts.$inferInsert, tx: DbOrTx = db) {
     const [row] = await tx.insert(heldDrafts).values(draft).returning();
     return row;
   },
@@ -18,7 +18,7 @@ export const heldDraftRepo = {
   },
 
   async list(opts: { outletId?: string; cashierId?: string; limit?: number; offset?: number }) {
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
     if (opts.outletId) conditions.push(eq(heldDrafts.outletId, opts.outletId));
     if (opts.cashierId) conditions.push(eq(heldDrafts.cashierId, opts.cashierId));
     return db
@@ -30,7 +30,7 @@ export const heldDraftRepo = {
       .offset(opts.offset ?? 0);
   },
 
-  async delete(id: string, tx: any = db) {
+  async delete(id: string, tx: DbOrTx = db) {
     await tx.delete(heldDrafts).where(eq(heldDrafts.id, id));
   },
 };

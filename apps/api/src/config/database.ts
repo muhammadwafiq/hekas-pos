@@ -27,6 +27,11 @@ export const db = drizzle(sql, {
   schema,
 });
 
+/** Drizzle transaction handle — used by repos that accept an optional tx. */
+export type Tx = Parameters<Parameters<Database['transaction']>[0]>[0];
+
+export type DbOrTx = Database | Tx;
+
 /** Close all connections (graceful shutdown) */
 export async function closeDb(): Promise<void> {
   await sql.end({ timeout: 5 });

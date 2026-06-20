@@ -3,8 +3,8 @@
  * Phase 4 Gate 3.
  */
 
-import { eq, and, desc, sql, inArray } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { eq, and, desc, sql, inArray, type SQL} from 'drizzle-orm';
+import { db, type DbOrTx} from '../config/database.js';
 import { surats } from '../db/schema/inventory.js';
 import { NotFoundError } from '../lib/errors.js';
 
@@ -12,7 +12,7 @@ export const suratRepo = {
   async list(opts: { outletId?: string; status?: string; limit?: number; offset?: number } = {}) {
     const limit = Math.min(opts.limit ?? 50, 200);
     const offset = opts.offset ?? 0;
-    const conds: any[] = [];
+    const conds: SQL[] = [];
     if (opts.outletId) conds.push(eq(surats.outletId, opts.outletId));
     if (opts.status) conds.push(eq(surats.status, opts.status as any));
 
@@ -51,7 +51,7 @@ export const suratRepo = {
     return this.update(id, { status: status as any, ...extra });
   },
 
-  async nextDocumentNumber(outletShortCode: string, tx: any = db): Promise<string> {
+  async nextDocumentNumber(outletShortCode: string, tx: DbOrTx = db): Promise<string> {
     const today = new Date();
     const yymm = `${today.getFullYear().toString().slice(2)}${String(today.getMonth() + 1).padStart(2, '0')}`;
     const prefix = `SJ/${outletShortCode}/${yymm}`;

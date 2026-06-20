@@ -2,12 +2,12 @@
  * Order repository — POS orders + items.
  */
 
-import { and, eq, sql, desc } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { and, eq, sql, desc, type SQL} from 'drizzle-orm';
+import { db, type DbOrTx} from '../config/database.js';
 import { orders, orderItems } from '../db/schema/pos.js';
 
 export const orderRepo = {
-  async create(order: typeof orders.$inferInsert, items: (typeof orderItems.$inferInsert)[], tx: any = db) {
+  async create(order: typeof orders.$inferInsert, items: (typeof orderItems.$inferInsert)[], tx: DbOrTx = db) {
     const [row] = await tx.insert(orders).values(order).returning();
     if (items.length > 0) {
       await tx.insert(orderItems).values(items.map((i) => ({ ...i, orderId: row.id })));
@@ -30,7 +30,7 @@ export const orderRepo = {
   },
 
   async list(opts: { outletId?: string; cashierId?: string; shiftId?: string; status?: string; limit?: number; offset?: number }) {
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
     if (opts.outletId) conditions.push(eq(orders.outletId, opts.outletId));
     if (opts.cashierId) conditions.push(eq(orders.cashierId, opts.cashierId));
     if (opts.shiftId) conditions.push(eq(orders.shiftId, opts.shiftId));
@@ -44,10 +44,10 @@ export const orderRepo = {
       .offset(opts.offset ?? 0);
   },
 
-  async updateStatus(id: string, status: 'completed' | 'voided' | 'refunded', extras: Partial<typeof orders.$inferInsert> = {}, tx: any = db) {
+  async updateStatus(id: string, status: 'completed' | 'voided' | 'refunded', extras: Partial<typeof orders.$inferInsert> = {}, tx: DbOrTx = db) {
     const [row] = await tx
       .update(orders)
-      .set({ status, ...extras, updatedAt: new Date() })
+      .set({ status, ...extras })
       .where(eq(orders.id, id))
       .returning();
     return row;

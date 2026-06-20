@@ -2,12 +2,12 @@
  * Shift repository — cashier shifts.
  */
 
-import { and, eq, desc, isNull } from 'drizzle-orm';
-import { db } from '../config/database.js';
+import { and, eq, desc, isNull, type SQL} from 'drizzle-orm';
+import { db, type DbOrTx} from '../config/database.js';
 import { shifts } from '../db/schema/shift.js';
 
 export const shiftRepo = {
-  async create(shift: typeof shifts.$inferInsert, tx: any = db) {
+  async create(shift: typeof shifts.$inferInsert, tx: DbOrTx = db) {
     const [row] = await tx.insert(shifts).values(shift).returning();
     return row;
   },
@@ -34,13 +34,30 @@ export const shiftRepo = {
       .orderBy(desc(shifts.startedAt));
   },
 
-  async endShift(id: string, data: { endingCash: number; expectedCash: number; cashDifference: number; totalTransactions: number; totalSales: number; status: 'selesai' | 'ditutup_paksa'; notes?: string }, tx: any = db) {
+  async endShift(
+    id: string,
+    data: {
+      endingCash: number;
+      expectedCash: number;
+      cashDifference: number;
+      totalTransactions: number;
+      totalSales: number;
+      status: 'selesai' | 'ditutup_paksa';
+      notes?: string;
+      endedAt?: Date;
+    },
+    tx: DbOrTx = db
+  ) {
     const [row] = await tx
       .update(shifts)
       .set({
         ...data,
-        endedAt: new Date(),
-        updatedAt: new Date(),
+        // postgres-js coerces number→numeric→string at DB boundary
+        endingCash: data.endingCash as any,
+        expectedCash: data.expectedCash as any,
+        cashDifference: data.cashDifference as any,
+        totalSales: data.totalSales as any,
+        endedAt: data.endedAt ?? new Date(),
       })
       .where(eq(shifts.id, id))
       .returning();
@@ -48,7 +65,7 @@ export const shiftRepo = {
   },
 
   async list(opts: { outletId?: string; cashierId?: string; status?: string; limit?: number; offset?: number }) {
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
     if (opts.outletId) conditions.push(eq(shifts.outletId, opts.outletId));
     if (opts.cashierId) conditions.push(eq(shifts.cashierId, opts.cashierId));
     if (opts.status) conditions.push(eq(shifts.status, opts.status as any));
