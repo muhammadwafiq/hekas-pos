@@ -29,6 +29,7 @@ import { dashboardRoutes } from './routes/dashboard.js';
 import { telegramRoutes } from './routes/telegram.js';
 import { telegramWebhookRoutes } from './routes/webhook/telegram.js';
 import { suratJalanRoutes } from './routes/surat-jalan.js';
+import { reportRoutes } from './reports/reports.routes.js';
 import { telegramSenderWorker } from './workers/telegram-sender.worker.js';
 
 const app = new Elysia()
@@ -65,6 +66,7 @@ const app = new Elysia()
           { name: 'Product Images', description: 'Product image upload' },
           { name: 'Incoming Goods', description: 'Purchase Orders (PO) + verify/reject' },
           { name: 'Outgoing Goods', description: 'Picking + delivery workflow' },
+          { name: 'Reports', description: 'Export reports (Excel/PDF)' },
         ],
         servers: [
           { url: env.APP_BASE_URL, description: `${env.NODE_ENV}` },
@@ -103,6 +105,7 @@ const app = new Elysia()
   .use(telegramRoutes)
   .use(telegramWebhookRoutes)
   .use(suratJalanRoutes)
+  .use(reportRoutes)
 
   // ====== GLOBAL ERROR HANDLER (catches everything) ======
   .onError(({ code, error, set, request }) => {

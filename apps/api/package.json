@@ -35,6 +35,7 @@
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "elysia": "^1.4.29",
+    "exceljs": "^4.4.0",
     "grammy": "^1.30.0",
     "nanoid": "^5.0.8",
     "pdfkit": "^0.19.1",
