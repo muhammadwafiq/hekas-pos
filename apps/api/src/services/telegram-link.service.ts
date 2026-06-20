@@ -20,7 +20,12 @@ export const telegramLinkService = {
   /**
    * Generate a fresh link code for a user. Returns code + bot deep link.
    */
-  async generateLinkCode(user: AuthUser) {
+  async generateLinkCode(user: AuthUser): Promise<{
+    code: string;
+    bot_url: string;
+    deep_link: string;
+    expires_at: string;
+  }> {
     const code = generateHekasLinkCode();
     const expiresAt = new Date(Date.now() + CODE_TTL_MS);
 
@@ -98,7 +103,16 @@ export const telegramLinkService = {
    * Get status by chat_id — used by bot /status command.
    * Returns user info if linked.
    */
-  async getStatusByChatId(chatId: string) {
+  async getStatusByChatId(chatId: string): Promise<{
+    linked: false;
+  } | {
+    linked: true;
+    userId: string;
+    fullName: string;
+    username: string;
+    role: string;
+    verifiedAt: string | null;
+  }> {
     const link = await telegramLinkRepo.findByChatId(chatId);
     if (!link || !link.isVerified) return { linked: false };
 
@@ -116,7 +130,7 @@ export const telegramLinkService = {
   /**
    * Unlink by chat_id — used by bot /unlink command.
    */
-  async unlinkByChatId(chatId: string) {
+  async unlinkByChatId(chatId: string): Promise<{ success: true; unlinked: boolean }> {
     const result = await telegramLinkRepo.unlinkByChatId(chatId);
     return { success: true, unlinked: !!result };
   },
