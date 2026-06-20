@@ -62,6 +62,7 @@ export const productImages = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     productId: uuid('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
     imageUrl: text('image_url').notNull(),
+    isPrimary: boolean('is_primary').notNull().default(false),
     sortOrder: integer('sort_order').notNull().default(0),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },

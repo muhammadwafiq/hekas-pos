@@ -58,11 +58,14 @@ export const productService = {
   async search(filter: ProductListFilter): Promise<PaginatedResult<Product>> {
     const limit = Math.min(filter.limit ?? 50, 200);
     const offset = filter.offset ?? 0;
-    const conditions: SQL[] = [eq(products.outletId, filter.outletId)];
+const conditions: SQL[] = [eq(products.outletId, filter.outletId)];
     if (filter.q) {
-      conditions.push(
-        or(ilike(products.name, `%${filter.q}%`), ilike(products.sku, `%${filter.q}%`), ilike(products.barcode, `%${filter.q}%`)),
+      const searchCond = or(
+        ilike(products.name, `%${filter.q}%`),
+        ilike(products.sku, `%${filter.q}%`),
+        ilike(products.barcode, `%${filter.q}%`),
       );
+      if (searchCond) conditions.push(searchCond);
     }
     if (filter.categoryId) conditions.push(eq(products.categoryId, filter.categoryId));
     if (filter.supplierId) conditions.push(eq(products.supplierId, filter.supplierId));

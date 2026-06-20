@@ -52,16 +52,15 @@ export const productImageRepo = {
   },
 
   async setPrimary(productId: string, imageId: string) {
-    // TODO: isPrimary column missing in product_images schema — add via db:push
     // Unset previous primary
     await db
       .update(productImages)
-      .set({ isPrimary: false } as any)
+      .set({ isPrimary: false })
       .where(eq(productImages.productId, productId));
     // Set new primary
     const [row] = await db
       .update(productImages)
-      .set({ isPrimary: true } as any)
+      .set({ isPrimary: true })
       .where(eq(productImages.id, imageId))
       .returning();
     if (!row) throw new NotFoundError(`Product image ${imageId} not found`);

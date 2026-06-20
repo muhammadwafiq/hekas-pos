@@ -449,7 +449,7 @@ export const orderService = {
           totalTransactions: sql`${shifts.totalTransactions} - 1`,
           updatedAt: new Date(),
         })
-        .where(eq(shifts.id, order.shiftId));
+        .where(eq(shifts.id, order.shiftId!));
 
       // 6. Audit log
       await tx.insert(auditLogs).values({

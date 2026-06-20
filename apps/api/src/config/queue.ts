@@ -12,7 +12,7 @@ let boss: PgBoss | null = null;
 export async function startQueue(): Promise<PgBoss> {
   if (boss) return boss;
 
-  boss = new (PgBoss as any)({
+  const newBoss = new (PgBoss as any)({
     connectionString: env.DATABASE_URL,
     schema: 'pgboss',
     retryLimit: 5,
@@ -21,12 +21,13 @@ export async function startQueue(): Promise<PgBoss> {
     workerInterval: 2,
   });
 
-  boss.on('error', (err) => logger.error({ err }, 'pg-boss error'));
+  newBoss.on('error', (err: Error) => logger.error({ err }, 'pg-boss error'));
 
-  await boss.start();
+  await newBoss.start();
+  boss = newBoss;
   logger.info('pg-boss queue started');
 
-  return boss;
+  return newBoss;
 }
 
 export function getQueue(): PgBoss {
