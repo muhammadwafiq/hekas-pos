@@ -7,18 +7,48 @@
  * quantity is signed (positive=in, negative=out).
  */
 
-import { eq, and, sql, desc, inArray, lte, gte } from 'drizzle-orm';
+import { eq, and, sql, desc, inArray, lte, gte, type SQL } from 'drizzle-orm';
 import { db } from '../config/database.js';
 import { stocks, stockMovements, stockAdjustments } from '../db/schema/stock.js';
 import { products } from '../db/schema/master.js';
 import { NotFoundError, ValidationError, BusinessRuleError } from '../lib/errors.js';
 import { logger } from '../config/logger.js';
 import type { AuthUser } from '../lib/auth-helper.js';
+import type { PaginatedResult } from '../types/services.js';
+
+export type StockLevel = typeof stocks.$inferSelect;
+export type StockMovement = typeof stockMovements.$inferSelect;
+export type StockAdjustment = typeof stockAdjustments.$inferSelect;
+export type StockMovementType =
+  | 'in_purchase'
+  | 'in_adjustment'
+  | 'in_transfer'
+  | 'in_return'
+  | 'out_sale'
+  | 'out_adjustment'
+  | 'out_transfer'
+  | 'out_expired';
+
+export interface LowStockItem {
+  productId: string;
+  name: string;
+  sku: string;
+  stockMin: number | null;
+  quantity: string; // numeric from DB → string
+  unit: string | null;
+}
+
+export interface MovementListOpts {
+  productId?: string;
+  outletId?: string;
+  limit?: number;
+  offset?: number;
+}
 
 export const stockService = {
   // ===== Phase 2 read functions (preserved) =====
 
-  async getStock(productId: string, outletId: string) {
+  async getStock(productId: string, outletId: string): Promise<StockLevel | { productId: string; outletId: string; quantity: 0 }> {
     const [stock] = await db
       .select()
       .from(stocks)
@@ -28,7 +58,7 @@ export const stockService = {
     return stock;
   },
 
-  async getLowStock(outletId: string) {
+  async getLowStock(outletId: string): Promise<LowStockItem[]> {
     return db
       .select({
         productId: products.id,
@@ -46,17 +76,17 @@ export const stockService = {
           sql`${stocks.quantity} <= ${products.stockMin}`
         )
       )
-      .limit(50);
+      .limit(50) as unknown as LowStockItem[];
   },
 
-  async getMovements(opts: { productId?: string; outletId?: string; limit?: number; offset?: number }) {
+  async getMovements(opts: MovementListOpts): Promise<StockMovement[]> {
     return this.listMovements(opts);
   },
 
-  async listMovements(opts: { productId?: string; outletId?: string; limit?: number; offset?: number }) {
+  async listMovements(opts: MovementListOpts): Promise<StockMovement[]> {
     const limit = opts.limit ?? 50;
     const offset = opts.offset ?? 0;
-    const conds = [] as any[];
+    const conds: SQL[] = [];
     if (opts.productId) conds.push(eq(stockMovements.productId, opts.productId));
     if (opts.outletId) conds.push(eq(stockMovements.outletId, opts.outletId));
 

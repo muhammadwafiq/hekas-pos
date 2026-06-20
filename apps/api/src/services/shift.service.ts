@@ -1,5 +1,10 @@
 /**
- * Shift service — start/end shift lifecycle.
+ * Shift service — start/end shift lifecycle for cashiers.
+ *
+ * Business rules:
+ * - One active shift per cashier at a time
+ * - endingCash - expectedCash = cashDifference (positive = over, negative = short)
+ * - Cannot end a non-active shift
  */
 
 import { eq } from 'drizzle-orm';
@@ -7,9 +12,20 @@ import { db } from '../config/database.js';
 import { shiftRepo } from '../repositories/shift.repo.js';
 import { users } from '../db/schema/auth.js';
 import { ConflictError, NotFoundError } from '../lib/errors.js';
+import type {
+  Shift,
+  ShiftStartOpts,
+  ShiftEndOpts,
+  ShiftListOpts,
+} from '../types/services.js';
 
 export const shiftService = {
-  async startShift(opts: { cashierId: string; outletId: string; startingCash: number; notes?: string }) {
+  /**
+   * Start a new shift for a cashier.
+   * @throws ConflictError if cashier already has active shift
+   * @throws NotFoundError if cashier doesn't exist
+   */
+  async startShift(opts: ShiftStartOpts): Promise<Shift> {
     // Check no active shift
     const active = await shiftRepo.findActive(opts.cashierId);
     if (active) {
@@ -35,7 +51,12 @@ export const shiftService = {
     });
   },
 
-  async endShift(opts: { shiftId: string; endingCash: number; notes?: string }) {
+  /**
+   * End a shift, computing expected cash from sum of transactions.
+   * @throws NotFoundError if shift doesn't exist
+   * @throws ConflictError if shift is not active
+   */
+  async endShift(opts: ShiftEndOpts): Promise<Shift> {
     const shift = await shiftRepo.findById(opts.shiftId);
     if (!shift) throw new NotFoundError('Shift');
     if (shift.status !== 'aktif') {
@@ -56,17 +77,20 @@ export const shiftService = {
     });
   },
 
-  async getCurrentShift(cashierId: string) {
+  /** Get the cashier's currently active shift (or null). */
+  async getCurrentShift(cashierId: string): Promise<Shift | null> {
     return shiftRepo.findActive(cashierId);
   },
 
-  async getById(id: string) {
+  /** Get shift by ID. */
+  async getById(id: string): Promise<Shift> {
     const shift = await shiftRepo.findById(id);
     if (!shift) throw new NotFoundError('Shift');
     return shift;
   },
 
-  async list(opts: { outletId?: string; cashierId?: string; status?: string; limit?: number; offset?: number }) {
+  /** List shifts with filters and pagination. */
+  async list(opts: ShiftListOpts): Promise<Shift[]> {
     return shiftRepo.list(opts);
   },
 };

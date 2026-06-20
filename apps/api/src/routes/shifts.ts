@@ -66,7 +66,7 @@ export const shiftRoutes = new Elysia({ prefix: '/api/shifts', tags: ['Shifts'] 
       data: await shiftService.list({
         outletId: (query.outletId as string) || user.outletId!,
         cashierId: query.cashierId as string | undefined,
-        status: query.status as string | undefined,
+        status: query.status as 'aktif' | 'selesai' | 'ditutup_paksa' | undefined,
         limit: Number(query.limit ?? 50),
         offset: Number(query.offset ?? 0),
       }),

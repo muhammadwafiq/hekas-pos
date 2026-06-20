@@ -1,16 +1,20 @@
 /**
  * Product service — full CRUD + image upload (Phase 3 Gate 2).
  * Extends Phase 2 read-only functions with admin actions.
+ *
+ * Returns: rows from `products` table joined with images.
+ * Cache: read-only queries can use `getCached()` wrapper (added in Phase 5).
  */
 
-import { eq, and, sql, desc, ilike, inArray, or } from 'drizzle-orm';
+import { eq, and, sql, desc, ilike, inArray, or, type SQL } from 'drizzle-orm';
 import { db } from '../config/database.js';
-import { products, categories, productImages } from '../db/schema/master.js';
+import { products, categories, productImages, type Product } from '../db/schema/master.js';
 import { stocks } from '../db/schema/stock.js';
 import { NotFoundError, ConflictError, ValidationError, BusinessRuleError } from '../lib/errors.js';
 import { logger } from '../config/logger.js';
 import { imageUpload } from '../lib/image-upload.js';
 import { productImageRepo } from '../repositories/product-image.repo.js';
+import type { PaginatedResult } from '../types/services.js';
 
 export interface ProductListFilter {
   q?: string;
@@ -24,9 +28,13 @@ export interface ProductListFilter {
   order?: 'asc' | 'desc';
 }
 
+export type ProductWithImages = Product & {
+  images: typeof productImages.$inferSelect[];
+};
+
 export const productService = {
   /** Phase 2 read-only functions (kept for backward compat) */
-  async getById(id: string) {
+  async getById(id: string): Promise<ProductWithImages> {
     const [row] = await db
       .select()
       .from(products)
@@ -37,7 +45,7 @@ export const productService = {
     return { ...row, images };
   },
 
-  async getByBarcode(barcode: string) {
+  async getByBarcode(barcode: string): Promise<Product> {
     const [row] = await db
       .select()
       .from(products)
@@ -47,10 +55,10 @@ export const productService = {
     return row;
   },
 
-  async search(filter: ProductListFilter) {
+  async search(filter: ProductListFilter): Promise<PaginatedResult<Product>> {
     const limit = Math.min(filter.limit ?? 50, 200);
     const offset = filter.offset ?? 0;
-    const conditions: any[] = [eq(products.outletId, filter.outletId)];
+    const conditions: SQL[] = [eq(products.outletId, filter.outletId)];
     if (filter.q) {
       conditions.push(
         or(ilike(products.name, `%${filter.q}%`), ilike(products.sku, `%${filter.q}%`), ilike(products.barcode, `%${filter.q}%`)),
