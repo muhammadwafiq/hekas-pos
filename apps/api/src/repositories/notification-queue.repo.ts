@@ -20,6 +20,8 @@ export const notificationQueueRepo = {
 
   async listDue(opts: { limit?: number } = {}) {
     const limit = opts.limit ?? 25;
+    // Fix: Drizzle 0.45 + postgres-js 3.4 doesn't auto-stringify Date in raw SQL template
+    // (causes "Received an instance of Date" error). Pre-stringify via toISOString().
     const now = new Date();
     return db
       .select()
@@ -27,7 +29,7 @@ export const notificationQueueRepo = {
       .where(
         and(
           eq(notificationQueue.status, 'pending'),
-          sql`(${notificationQueue.nextAttemptAt} IS NULL OR ${notificationQueue.nextAttemptAt} <= ${now})`
+          sql`(${notificationQueue.nextAttemptAt} IS NULL OR ${notificationQueue.nextAttemptAt} <= ${now.toISOString()}::timestamp)`
         ) as any
       )
       .limit(limit);

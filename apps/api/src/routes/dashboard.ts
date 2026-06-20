@@ -18,9 +18,10 @@ export const dashboardRoutes = new Elysia({ prefix: '/api/dashboard', tags: ['Da
     return dashboardGudangService.summary({ outletId });
   })
 
-  .get('/manager', async ({ jwt, headers, set }) => {
+  .get('/manager', async ({ jwt, headers, query, set }) => {
     const user = await getAuthUser(jwt, headers);
     await requireRole(user, ['manager']);
     if (!user.outletId) throw new NotFoundError('User has no outlet');
-    return dashboardManager(user.outletId);
+    const range = (query.range as 'today' | 'week' | 'month' | 'all') ?? 'today';
+    return dashboardManager(user.outletId, range);
   });
