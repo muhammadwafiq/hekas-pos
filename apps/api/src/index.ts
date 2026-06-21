@@ -34,6 +34,8 @@ import { hrRoutes } from './hr/hr.routes.js';
 import { telegramSenderWorker } from './workers/telegram-sender.worker.js';
 import { startQueue, getQueue } from './config/queue.js';
 import { dailyReportWorker } from './workers/daily-report.worker.js';
+import { registerRoutes } from './routes/register.js';
+import { adminSubscriptionRoutes, publicPlanRoutes } from './routes/admin/subscriptions.js';
 
 const app = new Elysia()
   // ====== GLOBAL MIDDLEWARE ======
@@ -111,6 +113,11 @@ const app = new Elysia()
   .use(suratJalanRoutes)
   .use(reportRoutes)
   .use(hrRoutes)
+
+  // ====== SUBSCRIPTION / SAAS ROUTES ======
+  .use(publicPlanRoutes)
+  .use(registerRoutes)
+  .use(adminSubscriptionRoutes)
 
   // ====== GLOBAL ERROR HANDLER (catches everything) ======
   .onError(({ code, error, set, request }) => {

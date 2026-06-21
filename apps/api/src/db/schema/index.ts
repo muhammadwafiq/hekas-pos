@@ -38,3 +38,6 @@ export * from './ai.js';
 
 // System (audit, settings, devices, printers)
 export * from './system.js';
+
+// Subscription (SaaS multi-tenant)
+export * from './subscription.js';
