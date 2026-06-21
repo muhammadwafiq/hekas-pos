@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar — HEKAS POS</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/config.js"></script>
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="nav-logo-icon">H</div>
+      HEKAS POS
+    </div>
+    <p class="auth-subtitle">Gratis 30 hari. Ga perlu kartu kredit. Setup 5 menit.</p>
+
+    <form id="register-form">
+      <div class="form-group">
+        <label class="form-label" for="fullName">Nama Lengkap *</label>
+        <input class="form-input" type="text" id="fullName" name="fullName" required minlength="2" maxlength="150" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="username">Username *</label>
+        <input class="form-input" type="text" id="username" name="username" required minlength="3" maxlength="50" pattern="[a-zA-Z0-9_]+" title="Hanya huruf, angka, underscore" />
+        <div class="form-help">Untuk login. 3-50 karakter, tanpa spasi.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email" name="email" />
+        <div class="form-help">Untuk verifikasi & reminder trial.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="phone">WhatsApp</label>
+        <input class="form-input" type="tel" id="phone" name="phone" placeholder="08123456789" />
+        <div class="form-help">Untuk notifikasi penting via WhatsApp.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password *</label>
+        <input class="form-input" type="password" id="password" name="password" required minlength="8" />
+        <div class="form-help">Minimal 8 karakter.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="organizationName">Nama Bisnis/Toko *</label>
+        <input class="form-input" type="text" id="organizationName" name="organizationName" required minlength="2" maxlength="150" placeholder="Toko Rina Jaya" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="outletName">Nama Toko (Cabang Pertama) *</label>
+        <input class="form-input" type="text" id="outletName" name="outletName" required minlength="2" maxlength="150" placeholder="Toko Rina Pusat" />
+        <div class="form-help">Lo bisa tambah cabang lain nanti.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="businessType">Jenis Bisnis</label>
+        <select class="form-select" id="businessType" name="businessType">
+          <option value="retail">Retail / Toko Kelontong</option>
+          <option value="fnB">F&B / Warung Makan</option>
+          <option value="fashion">Fashion / Pakaian</option>
+          <option value="apotek">Apotek / Klinik</option>
+          <option value="minimarket">Minimarket / Supermarket</option>
+          <option value="other">Lainnya</option>
+        </select>
+      </div>
+
+      <div id="form-error" class="form-error" style="display: none; margin-bottom: 16px;"></div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn">
+        🎉 Daftar Sekarang (Gratis 30 Hari)
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Sudah punya akun? <a href="/login.html">Login di sini</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { auth, ApiError } from '/js/api.js';
+
+    const form = document.getElementById('register-form');
+    const errorDiv = document.getElementById('form-error');
+    const submitBtn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.style.display = 'none';
+
+      const data = Object.fromEntries(new FormData(form));
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Membuat akun...';
+
+      try {
+        const res = await auth.register(data);
+
+        // Success
+        submitBtn.textContent = '✅ Berhasil! Mengalihkan...';
+
+        // Save trial info to localStorage for confirmation page
+        sessionStorage.setItem('lastRegistration', JSON.stringify({
+          username: data.username,
+          organizationName: res.data.organization.name,
+          outletName: res.data.outlet.name,
+          trialEndsAt: res.data.subscription.trialEndsAt,
+          email: data.email,
+        }));
+
+        // Redirect to success page
+        setTimeout(() => {
+          window.location.href = '/verify-email.html?status=registered';
+        }, 1000);
+      } catch (err) {
+        if (err instanceof ApiError) {
+          errorDiv.textContent = friendlyError(err);
+          errorDiv.style.display = 'block';
+        } else {
+          errorDiv.textContent = 'Terjadi kesalahan. Coba lagi.';
+          errorDiv.style.display = 'block';
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🎉 Daftar Sekarang (Gratis 30 Hari)';
+      }
+    });
+
+    function friendlyError(err) {
+      const code = err.code;
+      const map = {
+        username_taken: 'Username udah dipake orang lain. Coba yang lain.',
+        email_taken: 'Email udah terdaftar. Coba login atau pake email lain.',
+        ValidationError: err.message,
+        conflict: err.message,
+      };
+      return map[code] || err.message || 'Terjadi kesalahan. Coba lagi.';
+    }
+  </script>
+</body>
+</html>

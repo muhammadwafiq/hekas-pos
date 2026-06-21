@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifikasi Email — HEKAS POS</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/config.js"></script>
+</head>
+<body class="auth-page">
+  <div class="auth-card" style="text-align: center;">
+    <div id="content">
+      <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+      <h2 style="margin: 0 0 12px;">Memuat...</h2>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, ApiError } from '/js/api.js';
+
+    const content = document.getElementById('content');
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const status = params.get('status');
+
+    if (status === 'registered') {
+      // Just registered, show welcome
+      const data = JSON.parse(sessionStorage.getItem('lastRegistration') || '{}');
+      content.innerHTML = `
+        <div style="font-size: 64px; margin-bottom: 16px;">🎉</div>
+        <h2 style="margin: 0 0 12px;">Selamat Datang di HEKAS POS!</h2>
+        <p style="color: var(--hekas-text-muted); margin-bottom: 24px;">
+          Akun <strong>${data.username || ''}</strong> berhasil dibuat.<br/>
+          Bisnis: <strong>${data.organizationName || ''}</strong><br/>
+          Toko: <strong>${data.outletName || ''}</strong>
+        </p>
+        <div style="background: rgba(16, 185, 129, 0.1); border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: left;">
+          <div style="font-size: 13px; color: var(--hekas-text-muted); margin-bottom: 4px;">TRIAL 30 HARI GRATIS</div>
+          <div style="font-size: 24px; font-weight: 800;">Berakhir: ${formatDate(data.trialEndsAt)}</div>
+        </div>
+        ${data.email ? `
+          <p style="color: var(--hekas-text-muted); font-size: 14px; margin-bottom: 24px;">
+            📧 Email konfirmasi udah dikirim ke <strong>${data.email}</strong>
+          </p>
+        ` : ''}
+        <a href="/login.html" class="btn btn-primary btn-lg btn-block">Login Sekarang →</a>
+      `;
+    } else if (token) {
+      // Verify email token
+      try {
+        const res = await auth.verifyEmail(token);
+        content.innerHTML = `
+          <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
+          <h2 style="margin: 0 0 12px;">Email Terverifikasi!</h2>
+          <p style="color: var(--hekas-text-muted); margin-bottom: 24px;">
+            Email kamu udah aktif. Sekarang bisa login dan mulai pakai HEKAS POS.
+          </p>
+          <a href="/login.html" class="btn btn-primary btn-lg btn-block">Login →</a>
+        `;
+      } catch (err) {
+        content.innerHTML = `
+          <div style="font-size: 64px; margin-bottom: 16px;">❌</div>
+          <h2 style="margin: 0 0 12px;">Verifikasi Gagal</h2>
+          <p style="color: var(--hekas-text-muted); margin-bottom: 24px;">
+            ${err instanceof ApiError ? err.message : 'Token tidak valid atau sudah kadaluarsa.'}
+          </p>
+          <a href="/register.html" class="btn btn-secondary btn-lg btn-block">Daftar Ulang</a>
+        `;
+      }
+    } else {
+      content.innerHTML = `
+        <div style="font-size: 64px; margin-bottom: 16px;">✉️</div>
+        <h2 style="margin: 0 0 12px;">Cek Email Kamu</h2>
+        <p style="color: var(--hekas-text-muted); margin-bottom: 24px;">
+          Kami udah kirim link verifikasi ke email kamu.<br/>
+          Klik link di email untuk aktivasi.
+        </p>
+        <a href="/login.html" class="btn btn-secondary btn-lg btn-block">Login</a>
+      `;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+    }
+  </script>
+</body>
+</html>

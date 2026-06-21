@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HEKAS POS — Sistem Kasir Modern untuk UMKM Indonesia</title>
+  <meta name="description" content="Sistem kasir (POS) modern untuk UMKM, toko retail, dan F&B. Multi-outlet, multi-user, gratis 30 hari. Cocok untuk warung, apotek, minimarket, franchise." />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/config.js"></script>
+</head>
+<body>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-icon">H</div>
+        HEKAS POS
+      </a>
+      <div class="nav-links">
+        <a href="#features">Fitur</a>
+        <a href="#pricing">Harga</a>
+        <a href="#faq">FAQ</a>
+        <a href="/login.html" class="btn btn-secondary">Login</a>
+        <a href="/register.html" class="btn btn-primary">Daftar Gratis</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <span class="hero-badge">🇮🇩 Dibuat untuk UMKM Indonesia</span>
+      <h1>Sistem kasir modern<br />untuk <span class="gradient">UMKM Indonesia</span></h1>
+      <p>Kelola 1 toko atau 10 cabang dalam satu aplikasi. Gratis 30 hari, ga perlu kartu kredit.</p>
+      <div class="hero-cta">
+        <a href="/register.html" class="btn btn-primary btn-lg">🎉 Coba 30 Hari Gratis</a>
+        <a href="#features" class="btn btn-secondary btn-lg">Pelajari Fitur</a>
+      </div>
+      <p class="hero-note">Trial 30 hari · Ga perlu kartu kredit · Setup 5 menit</p>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section id="features" class="section">
+    <div class="container">
+      <h2 class="section-title">Semua yang lo butuhin, ga ada yang ribet</h2>
+      <p class="section-subtitle">Fitur lengkap untuk warung, apotek, minimarket, F&B, dan franchise</p>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">🏪</div>
+          <h3>Multi-Outlet</h3>
+          <p>Kelola banyak cabang dari satu dashboard. Cocok untuk franchise dan bisnis yang berkembang.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">👥</div>
+          <h3>Manajemen Staff</h3>
+          <p>Tambah kasir dan admin gudang. Atur hak akses per outlet. Reset password kapan aja.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📦</div>
+          <h3>Stok Real-time</h3>
+          <p>Pantau stok per outlet. Notifikasi otomatis kalo barang mau habis. Stock opname gampang.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💳</div>
+          <h3>Pembayaran QRIS</h3>
+          <p>Terima pembayaran QRIS via Midtrans. Otomatis masuk ke laporan. Ga perlu input manual.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📊</div>
+          <h3>Laporan Lengkap</h3>
+          <p>Sales harian, produk terlaris, profit per outlet, performance staff. Export ke Excel.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📱</div>
+          <h3>Responsive</h3>
+          <p>Jalan di laptop, tablet, HP. Cocok untuk kasir mobile atau meja kasir tetap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="section" style="background: #f4f4f5;">
+    <div class="container">
+      <h2 class="section-title">Pilih plan yang cocok</h2>
+      <p class="section-subtitle">Mulai gratis 30 hari. Upgrade kapan aja. Batalin kapan aja.</p>
+      <div id="pricing-grid" class="pricing-grid">
+        <!-- Loaded dynamically from /api/public/plans -->
+        <p style="grid-column: 1 / -1; text-align: center; color: #71717a;">Loading pricing...</p>
+      </div>
+      <p style="text-align: center; margin-top: 32px; color: #71717a; font-size: 14px;">
+        Semua plan termasuk: support 24/7, backup harian, update gratis.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container" style="max-width: 800px;">
+      <h2 class="section-title">Pertanyaan yang sering ditanya</h2>
+      <div style="margin-top: 32px;">
+        <details style="margin-bottom: 16px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e4e4e7;">
+          <summary style="font-weight: 600; cursor: pointer;">Apakah benar-benar gratis 30 hari?</summary>
+          <p style="margin-top: 12px; color: #71717a;">Ya, trial 30 hari full fitur. Ga perlu kartu kredit. Setelah 30 hari, lo bisa pilih plan berbayar atau akun akan di-pause (data tetap aman).</p>
+        </details>
+        <details style="margin-bottom: 16px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e4e4e7;">
+          <summary style="font-weight: 600; cursor: pointer;">Berapa lama setup-nya?</summary>
+          <p style="margin-top: 12px; color: #71717a;">5 menit untuk setup awal. Tambah produk, staff, dan mulai transaksi dalam 15 menit total.</p>
+        </details>
+        <details style="margin-bottom: 16px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e4e4e7;">
+          <summary style="font-weight: 600; cursor: pointer;">Apa bedanya sama Moka / Pawoon / Kasir Pintar?</summary>
+          <p style="margin-top: 12px; color: #71717a;">HEKAS POS fokus ke UMKM Indonesia dengan harga lebih terjangkau. Fitur multi-outlet mulai dari plan Basic (Rp 179K/bln), sedangkan kompetitor biasanya mulai dari Rp 300K+.</p>
+        </details>
+        <details style="margin-bottom: 16px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e4e4e7;">
+          <summary style="font-weight: 600; cursor: pointer;">Apakah data saya aman?</summary>
+          <p style="margin-top: 12px; color: #71717a;">Ya, data di-backup harian. Server di Indonesia (VPS + PostgreSQL). Enkripsi password pakai argon2id.</p>
+        </details>
+        <details style="margin-bottom: 16px; padding: 20px; background: white; border-radius: 8px; border: 1px solid #e4e4e7;">
+          <summary style="font-weight: 600; cursor: pointer;">Bisa bayar bulanan atau tahunan?</summary>
+          <p style="margin-top: 12px; color: #71717a;">Bisa dua-duanya. Bayar tahunan hemat 2 bulan (10 bulan bayar). Untuk saat ini payment manual via transfer, Midtrans QRIS akan tersedia di Phase 2.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="background: linear-gradient(135deg, var(--hekas-primary), var(--hekas-secondary)); color: white; text-align: center;">
+    <div class="container">
+      <h2 class="section-title" style="color: white;">Siap coba HEKAS POS?</h2>
+      <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">Gratis 30 hari. Setup 5 menit. Ga perlu kartu kredit.</p>
+      <a href="/register.html" class="btn btn-lg" style="background: white; color: var(--hekas-primary);">🎉 Daftar Sekarang</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <div class="nav-logo-icon">H</div>
+            HEKAS POS
+          </div>
+          <p class="footer-tagline">Sistem kasir modern untuk UMKM Indonesia. Dibuat dengan ❤️ di Yogyakarta.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Fitur</a></li>
+            <li><a href="#pricing">Harga</a></li>
+            <li><a href="/register.html">Daftar</a></li>
+            <li><a href="/login.html">Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="https://wa.me/6281234567890" target="_blank">WhatsApp</a></li>
+            <li><a href="mailto:hello@hekaspos.id">Email</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 HEKAS POS. All rights reserved.</div>
+        <div>Made with ❤️ in Indonesia</div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { publicApi } from '/js/api.js';
+
+    // Load pricing from API
+    (async () => {
+      try {
+        const res = await publicApi.getPlans();
+        const plans = res.data || [];
+        renderPricing(plans);
+      } catch (err) {
+        console.error('Failed to load plans:', err);
+        // Show fallback static pricing
+        renderPricing([
+          { planCode: 'trial', displayName: 'Trial', priceMonthlyIdr: 0, maxOutlets: 1, features: ['1 outlet', '1 user', '30 hari'], isPopular: false },
+          { planCode: 'starter', displayName: 'Starter', priceMonthlyIdr: 99000, maxOutlets: 1, features: ['1 outlet', '3 user', 'POS basic'], isPopular: false },
+          { planCode: 'basic', displayName: 'Basic', priceMonthlyIdr: 179000, maxOutlets: 2, features: ['2 outlet', '5 user', 'Stok management'], isPopular: true },
+          { planCode: 'pro', displayName: 'Pro', priceMonthlyIdr: 699000, maxOutlets: 10, features: ['10 outlet', '20 user', 'Stock transfer'], isPopular: false },
+        ]);
+      }
+    })();
+
+    function renderPricing(plans) {
+      const grid = document.getElementById('pricing-grid');
+      grid.innerHTML = plans.map(p => `
+        <div class="pricing-card ${p.isPopular ? 'popular' : ''}">
+          ${p.isPopular ? '<div class="pricing-popular-badge">Paling Populer</div>' : ''}
+          <div class="pricing-name">${p.displayName || p.planCode}</div>
+          <div class="pricing-price">
+            <span class="pricing-price-currency">Rp</span>${formatNumber(p.priceMonthlyIdr || 0)}
+          </div>
+          <div class="pricing-period">per bulan</div>
+          <div class="pricing-outlets">${p.maxOutlets === 999 ? '∞' : p.maxOutlets} outlet</div>
+          <ul class="pricing-features">
+            ${(p.features || []).map(f => `<li>${f}</li>`).join('')}
+          </ul>
+          <a href="/register.html" class="btn ${p.isPopular ? 'btn-primary' : 'btn-secondary'} btn-block">
+            ${p.priceMonthlyIdr === 0 ? 'Mulai Gratis' : 'Pilih Plan'}
+          </a>
+        </div>
+      `).join('');
+    }
+
+    function formatNumber(n) {
+      return new Intl.NumberFormat('id-ID').format(n);
+    }
+  </script>
+</body>
+</html>

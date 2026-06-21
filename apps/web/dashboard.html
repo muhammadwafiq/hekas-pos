@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — HEKAS POS</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/config.js"></script>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+      <a href="/dashboard.html" class="nav-logo" style="margin-bottom: 32px;">
+        <div class="nav-logo-icon">H</div>
+        HEKAS POS
+      </a>
+      <nav>
+        <a href="/dashboard.html" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start;">📊 Dashboard</a>
+        <a href="#" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start; opacity: 0.5; cursor: not-allowed;" title="Coming soon">🏪 POS</a>
+        <a href="#" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start; opacity: 0.5; cursor: not-allowed;" title="Coming soon">📦 Produk</a>
+        <a href="#" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start; opacity: 0.5; cursor: not-allowed;" title="Coming soon">📈 Laporan</a>
+        <hr style="margin: 16px 0; border: none; border-top: 1px solid #e4e4e7;" />
+        <a href="/admin/staff.html" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start;">👥 Staff</a>
+        <a href="/admin/outlets.html" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start;">🏪 Outlet</a>
+        <a href="/admin/billing.html" class="btn btn-secondary btn-block" style="margin-bottom: 8px; justify-content: flex-start;">💳 Billing</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <h1>Halo, <span id="user-name">User</span>! 👋</h1>
+        <p>Ini dashboard kamu. Mulai kelola toko dari sini.</p>
+      </div>
+
+      <div id="trial-banner" style="display: none; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <div style="font-size: 14px; color: #92400e; font-weight: 600;">⏰ TRIAL AKTIF</div>
+          <div style="font-size: 16px; color: #78350f;">Tinggal <strong id="trial-days">?</strong> hari lagi</div>
+        </div>
+        <a href="/admin/billing.html" class="btn btn-primary">Upgrade Sekarang</a>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Outlet</div>
+          <div class="stat-value" id="stat-outlets">—</div>
+          <div class="stat-meta" id="stat-outlets-meta">Loading...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Staff</div>
+          <div class="stat-value" id="stat-staff">—</div>
+          <div class="stat-meta">User terdaftar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Plan</div>
+          <div class="stat-value" id="stat-plan">—</div>
+          <div class="stat-meta" id="stat-plan-meta">Loading...</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Status</div>
+          <div class="stat-value" id="stat-status" style="color: var(--hekas-success);">—</div>
+          <div class="stat-meta">Subscription</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">🚀 Mulai dari sini</h3>
+        <p class="card-subtitle">3 langkah untuk setup toko kamu:</p>
+        <div style="display: grid; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--hekas-bg); border-radius: 8px;">
+            <div style="width: 32px; height: 32px; background: var(--hekas-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">Tambah produk</div>
+              <div style="font-size: 13px; color: var(--hekas-text-muted);">Setup katalog produk kamu</div>
+            </div>
+            <span style="font-size: 12px; color: var(--hekas-text-muted);">Coming soon</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--hekas-bg); border-radius: 8px;">
+            <div style="width: 32px; height: 32px; background: var(--hekas-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">Invite staff</div>
+              <div style="font-size: 13px; color: var(--hekas-text-muted);">Tambah kasir & admin gudang</div>
+            </div>
+            <a href="/admin/staff.html" class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Mulai →</a>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--hekas-bg); border-radius: 8px;">
+            <div style="width: 32px; height: 32px; background: var(--hekas-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600;">Tambah outlet kedua (optional)</div>
+              <div style="font-size: 13px; color: var(--hekas-text-muted);">Kalo punya cabang lain</div>
+            </div>
+            <a href="/admin/outlets.html" class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Mulai →</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+        <button id="logout-btn" class="btn btn-secondary">Logout</button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth, getUser, logout, toast } from '/js/auth.js';
+    import { outlets, users, subscription, ApiError } from '/js/api.js';
+
+    if (!requireAuth()) {
+      // Will redirect to login
+    } else {
+      const user = getUser();
+      document.getElementById('user-name').textContent = user.fullName || user.username;
+
+      loadStats();
+    }
+
+    async function loadStats() {
+      // Load outlets
+      try {
+        const outRes = await outlets.list();
+        const out = outRes.data || [];
+        document.getElementById('stat-outlets').textContent = out.length;
+        document.getElementById('stat-outlets-meta').textContent = `${out.filter(o => o.isActive).length} aktif`;
+      } catch (e) {
+        document.getElementById('stat-outlets').textContent = '0';
+        document.getElementById('stat-outlets-meta').textContent = '—';
+      }
+
+      // Load users
+      try {
+        const usrRes = await users.list();
+        const usr = usrRes.data || [];
+        document.getElementById('stat-staff').textContent = usr.length;
+      } catch (e) {
+        document.getElementById('stat-staff').textContent = '1';
+      }
+
+      // Load subscription
+      try {
+        const subRes = await subscription.getMine();
+        const sub = subRes.data;
+        if (sub) {
+          document.getElementById('stat-plan').textContent = (sub.planCode || 'trial').toUpperCase();
+          document.getElementById('stat-plan-meta').textContent = `Rp ${formatNumber(sub.priceMonthlyIdr || 0)}/bln`;
+          document.getElementById('stat-status').textContent = sub.status || '—';
+          document.getElementById('stat-status').style.color =
+            sub.status === 'active' || sub.status === 'trial' ? 'var(--hekas-success)' : 'var(--hekas-danger)';
+
+          // Trial banner
+          if (sub.status === 'trial' && sub.trialEndsAt) {
+            const daysLeft = Math.ceil((new Date(sub.trialEndsAt) - new Date()) / (1000 * 60 * 60 * 24));
+            document.getElementById('trial-days').textContent = daysLeft;
+            document.getElementById('trial-banner').style.display = 'flex';
+          }
+        }
+      } catch (e) {
+        document.getElementById('stat-plan').textContent = '—';
+        document.getElementById('stat-plan-meta').textContent = '—';
+        document.getElementById('stat-status').textContent = '—';
+      }
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', logout);
+
+    function formatNumber(n) {
+      return new Intl.NumberFormat('id-ID').format(n);
+    }
+  </script>
+</body>
+</html>
