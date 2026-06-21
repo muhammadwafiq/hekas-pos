@@ -37,6 +37,7 @@ import { dailyReportWorker } from './workers/daily-report.worker.js';
 import { registerRoutes } from './routes/register.js';
 import { adminSubscriptionRoutes, publicPlanRoutes } from './routes/admin/subscriptions.js';
 import { adminOutletRoutes } from './routes/admin/outlets.js';
+import { adminUserRoutes } from './routes/admin/users.js';
 
 const app = new Elysia()
   // ====== GLOBAL MIDDLEWARE ======
@@ -120,6 +121,7 @@ const app = new Elysia()
   .use(registerRoutes)
   .use(adminSubscriptionRoutes)
   .use(adminOutletRoutes)
+  .use(adminUserRoutes)
 
   // ====== GLOBAL ERROR HANDLER (catches everything) ======
   .onError(({ code, error, set, request }) => {
